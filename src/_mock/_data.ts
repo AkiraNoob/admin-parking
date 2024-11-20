@@ -1,14 +1,19 @@
+import { EmployeeProps } from 'src/sections/employee/employee-table-row';
 import {
-  _id,
-  _price,
-  _times,
+  ParkingLotsProps,
+  ParkingStatusEnum,
+} from 'src/sections/parking-lots/parking-lots-table-row';
+import { EUserStatus, UserProps } from 'src/sections/user/user-table-row';
+import {
   _company,
-  _boolean,
-  _fullName,
-  _taskNames,
-  _postTitles,
   _description,
+  _fullName,
+  _id,
+  _postTitles,
+  _price,
   _productNames,
+  _taskNames,
+  _times,
 } from './_mock';
 
 // ----------------------------------------------------------------------
@@ -21,27 +26,38 @@ export const _myAccount = {
 
 // ----------------------------------------------------------------------
 
-export const _users = [...Array(24)].map((_, index) => ({
+export const _users: UserProps[] = [...Array(24)].map<UserProps>((_, index) => ({
   id: _id(index),
-  name: _fullName(index),
   company: _company(index),
-  isVerified: _boolean(index),
+  address: 'Đường Mạc Đĩnh Chi, Khu phố Tân Hòa, Phường Đông Hòa, Thành phố Dĩ An, Tỉnh Bình Dương',
+  phone: '0921235612',
   avatarUrl: `/assets/images/avatar/avatar-${index + 1}.webp`,
-  status: index % 4 ? 'active' : 'banned',
-  role:
-    [
-      'Leader',
-      'Hr Manager',
-      'UI Designer',
-      'UX Designer',
-      'UI/UX Designer',
-      'Project Manager',
-      'Backend Developer',
-      'Full Stack Designer',
-      'Front End Developer',
-      'Full Stack Developer',
-    ][index] || 'UI Designer',
+  status: index % 4 ? EUserStatus.Active : EUserStatus.Disable,
 }));
+
+// ----------------------------------------------------------------------
+
+export const _employees: EmployeeProps[] = [...Array(24)].map<EmployeeProps>((_, index) => ({
+  id: _id(index),
+  phone: '0921235612',
+  avatarUrl: `/assets/images/avatar/avatar-${index + 1}.webp`,
+  name: _fullName(index),
+  parkingLotId: _id(index),
+  dateJoined: _times(index),
+}));
+
+// ----------------------------------------------------------------------
+
+export const _parkingLots: ParkingLotsProps[] = [...Array(24)].map<ParkingLotsProps>(
+  (_, index) => ({
+    id: _id(index),
+    name: _fullName(index),
+    address:
+      'Đường Mạc Đĩnh Chi, Khu phố Tân Hòa, Phường Đông Hòa, Thành phố Dĩ An, Tỉnh Bình Dương',
+    dateStart: _times(index),
+    status: index % 4 ? ParkingStatusEnum.Active : ParkingStatusEnum.Inactive,
+  })
+);
 
 // ----------------------------------------------------------------------
 
