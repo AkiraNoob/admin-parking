@@ -1,27 +1,23 @@
-import type { Theme, SxProps, Breakpoint } from '@mui/material/styles';
+import type { Breakpoint, SxProps, Theme } from '@mui/material/styles';
 
 import { useState } from 'react';
 
-import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
-
-import { _langs, _notifications } from 'src/_mock';
 
 import { Iconify } from 'src/components/iconify';
 
-import { Main } from './main';
 import { layoutClasses } from '../classes';
-import { NavMobile, NavDesktop } from './nav';
-import { navData } from '../config-nav-dashboard';
-import { Searchbar } from '../components/searchbar';
-import { _workspaces } from '../config-nav-workspace';
-import { MenuButton } from '../components/menu-button';
-import { LayoutSection } from '../core/layout-section';
-import { HeaderSection } from '../core/header-section';
 import { AccountPopover } from '../components/account-popover';
-import { LanguagePopover } from '../components/language-popover';
-import { NotificationsPopover } from '../components/notifications-popover';
+import { MenuButton } from '../components/menu-button';
+import { Searchbar } from '../components/searchbar';
+import { navData } from '../config-nav-dashboard';
+import { _workspaces } from '../config-nav-workspace';
+import { HeaderSection } from '../core/header-section';
+import { LayoutSection } from '../core/layout-section';
+import { Main } from './main';
+import { NavDesktop, NavMobile } from './nav';
 
 // ----------------------------------------------------------------------
 
@@ -81,8 +77,6 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
             rightArea: (
               <Box gap={1} display="flex" alignItems="center">
                 <Searchbar />
-                <LanguagePopover data={_langs} />
-                <NotificationsPopover data={_notifications} />
                 <AccountPopover
                   data={[
                     {

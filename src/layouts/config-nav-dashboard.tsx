@@ -1,46 +1,28 @@
-import { Label } from 'src/components/label';
-import { SvgColor } from 'src/components/svg-color';
-
+import ApartmentIcon from '@mui/icons-material/Apartment';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import PeopleIcon from '@mui/icons-material/People';
 // ----------------------------------------------------------------------
-
-const icon = (name: string) => (
-  <SvgColor width="100%" height="100%" src={`/assets/icons/navbar/${name}.svg`} />
-);
 
 export const navData = [
   {
-    title: 'Dashboard',
+    title: 'Trang chủ',
     path: '/',
-    icon: icon('ic-analytics'),
+    icon: <FormatListBulletedIcon />,
   },
   {
-    title: 'User',
-    path: '/user',
-    icon: icon('ic-user'),
+    title: 'Danh sách doanh nghiệp',
+    path: '/parking-owners',
+    icon: <ApartmentIcon />,
   },
   {
-    title: 'Product',
-    path: '/products',
-    icon: icon('ic-cart'),
-    info: (
-      <Label color="error" variant="inverted">
-        +3
-      </Label>
-    ),
+    title: 'Danh sách nhân viên',
+    path: '/parking-employee',
+    icon: <PeopleIcon />,
   },
   {
-    title: 'Blog',
-    path: '/blog',
-    icon: icon('ic-blog'),
-  },
-  {
-    title: 'Sign in',
-    path: '/sign-in',
-    icon: icon('ic-lock'),
-  },
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: icon('ic-disabled'),
+    title: 'Danh sách bãi xe',
+    path: '/parking-lots',
+    icon: <DirectionsCarIcon />,
   },
 ];

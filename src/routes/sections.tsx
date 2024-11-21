@@ -1,12 +1,15 @@
 import { lazy, Suspense } from 'react';
-import { Outlet, Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 
-import { varAlpha } from 'src/theme/styles';
 import { AuthLayout } from 'src/layouts/auth';
 import { DashboardLayout } from 'src/layouts/dashboard';
+import { EmployeeView } from 'src/sections/employee/view';
+import { ParkingLotsDetailView } from 'src/sections/parking-lots-detail/view/parking-lots-detail-view';
+import { ParkingLotsView } from 'src/sections/parking-lots/view';
+import { varAlpha } from 'src/theme/styles';
 
 // ----------------------------------------------------------------------
 
@@ -44,9 +47,16 @@ export function Router() {
       ),
       children: [
         { element: <HomePage />, index: true },
-        { path: 'user', element: <UserPage /> },
-        { path: 'products', element: <ProductsPage /> },
-        { path: 'blog', element: <BlogPage /> },
+        { path: 'parking-owners', element: <UserPage /> },
+        { path: 'parking-employee', element: <EmployeeView /> },
+        {
+          path: 'parking-lots',
+          element: <ParkingLotsView />,
+        },
+        {
+          path: 'parking-lots/:parkingId',
+          element: <ParkingLotsDetailView />,
+        },
       ],
     },
     {
