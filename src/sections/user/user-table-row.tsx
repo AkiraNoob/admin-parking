@@ -1,28 +1,35 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
-import Box from '@mui/material/Box';
+import BlockIcon from '@mui/icons-material/Block';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import { Divider } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
-import Popover from '@mui/material/Popover';
-import TableRow from '@mui/material/TableRow';
+import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
-import MenuList from '@mui/material/MenuList';
-import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
-
+import MenuList from '@mui/material/MenuList';
+import Popover from '@mui/material/Popover';
+import TableCell from '@mui/material/TableCell';
+import TableRow from '@mui/material/TableRow';
 import { Label } from 'src/components/label';
-import { Iconify } from 'src/components/iconify';
-
 // ----------------------------------------------------------------------
+
+export enum EUserStatus {
+  Active = 'active',
+  Disable = 'disable',
+}
 
 export type UserProps = {
   id: string;
-  name: string;
-  role: string;
-  status: string;
   company: string;
+  address: string;
+  phone: string;
+  status: EUserStatus;
   avatarUrl: string;
-  isVerified: boolean;
 };
 
 type UserTableRowProps = {
@@ -49,32 +56,56 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
           <Checkbox disableRipple checked={selected} onChange={onSelectRow} />
         </TableCell>
 
-        <TableCell component="th" scope="row">
+        <TableCell
+          component="th"
+          scope="row"
+          style={{
+            flexShrink: 0,
+          }}
+        >
           <Box gap={2} display="flex" alignItems="center">
-            <Avatar alt={row.name} src={row.avatarUrl} />
-            {row.name}
+            <Avatar alt={row.company} src={row.avatarUrl} />
+            {row.company}
           </Box>
         </TableCell>
 
-        <TableCell>{row.company}</TableCell>
-
-        <TableCell>{row.role}</TableCell>
-
-        <TableCell align="center">
-          {row.isVerified ? (
-            <Iconify width={22} icon="solar:check-circle-bold" sx={{ color: 'success.main' }} />
-          ) : (
-            '-'
-          )}
+        <TableCell
+          style={{
+            flexShrink: 0,
+          }}
+        >
+          {row.phone}
         </TableCell>
-
         <TableCell>
-          <Label color={(row.status === 'banned' && 'error') || 'success'}>{row.status}</Label>
+          <p
+            style={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {row.address}
+          </p>
         </TableCell>
 
-        <TableCell align="right">
+        <TableCell
+          style={{
+            flexShrink: 0,
+          }}
+        >
+          <Label color={(row.status === EUserStatus.Disable && 'error') || 'success'}>
+            {row.status}
+          </Label>
+        </TableCell>
+
+        <TableCell
+          align="right"
+          style={{
+            flexShrink: 0,
+          }}
+        >
           <IconButton onClick={handleOpenPopover}>
-            <Iconify icon="eva:more-vertical-fill" />
+            <MoreHorizIcon />
           </IconButton>
         </TableCell>
       </TableRow>
@@ -91,7 +122,7 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
           sx={{
             p: 0.5,
             gap: 0.5,
-            width: 140,
+            width: 'fit-content',
             display: 'flex',
             flexDirection: 'column',
             [`& .${menuItemClasses.root}`]: {
@@ -103,13 +134,27 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
           }}
         >
           <MenuItem onClick={handleClosePopover}>
-            <Iconify icon="solar:pen-bold" />
-            Edit
+            <EditIcon />
+            Chỉnh sửa
           </MenuItem>
 
+          {row.status === EUserStatus.Active ? (
+            <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
+              <BlockIcon />
+              Dừng hoạt động
+            </MenuItem>
+          ) : (
+            <MenuItem onClick={handleClosePopover} sx={{ color: 'Highlight' }}>
+              <TaskAltIcon />
+              Tái hoạt động
+            </MenuItem>
+          )}
+
+          <Divider />
+
           <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
-            <Iconify icon="solar:trash-bin-trash-bold" />
-            Delete
+            <DeleteIcon />
+            Xoá
           </MenuItem>
         </MenuList>
       </Popover>

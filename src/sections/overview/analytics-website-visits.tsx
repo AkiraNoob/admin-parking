@@ -3,7 +3,7 @@ import type { ChartOptions } from 'src/components/chart';
 
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
-import { useTheme, alpha as hexAlpha } from '@mui/material/styles';
+import { alpha as hexAlpha, useTheme } from '@mui/material/styles';
 
 import { Chart, useChart } from 'src/components/chart';
 
@@ -60,7 +60,7 @@ export function AnalyticsWebsiteVisits({ title, subheader, chart, ...other }: Pr
         series={chart.series}
         options={chartOptions}
         height={364}
-        sx={{ py: 2.5, pl: 1, pr: 2.5 }}
+        sx={{ py: 2.5, pl: 1, pr: 2.5, width: '100%' }}
       />
     </Card>
   );
