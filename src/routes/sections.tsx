@@ -4,6 +4,7 @@ import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 
+import PATH_NAME from 'src/configs/path-name';
 import { AuthLayout } from 'src/layouts/auth';
 import { DashboardLayout } from 'src/layouts/dashboard';
 import { EmployeeView } from 'src/sections/employee/view';
@@ -47,20 +48,20 @@ export function Router() {
       ),
       children: [
         { element: <HomePage />, index: true },
-        { path: 'parking-owners', element: <UserPage /> },
-        { path: 'parking-employee', element: <EmployeeView /> },
+        { path: PATH_NAME.Merchants.slice(1), element: <UserPage /> },
+        { path: PATH_NAME.ParkingEmployee.slice(1), element: <EmployeeView /> },
         {
-          path: 'parking-lots',
+          path: PATH_NAME.ParkingLots.slice(1),
           element: <ParkingLotsView />,
         },
         {
-          path: 'parking-lots/:parkingId',
+          path: PATH_NAME.ParkingLotDetail.slice(1),
           element: <ParkingLotsDetailView />,
         },
       ],
     },
     {
-      path: 'sign-in',
+      path: PATH_NAME.SignIn.slice(1),
       element: (
         <AuthLayout>
           <SignInPage />
