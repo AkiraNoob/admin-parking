@@ -135,18 +135,18 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
         >
           <MenuItem onClick={handleClosePopover}>
             <EditIcon />
-            Chỉnh sửa
+            Edit
           </MenuItem>
 
           {row.status === EUserStatus.Active ? (
             <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
               <BlockIcon />
-              Dừng hoạt động
+              Suspend
             </MenuItem>
           ) : (
             <MenuItem onClick={handleClosePopover} sx={{ color: 'Highlight' }}>
               <TaskAltIcon />
-              Tái hoạt động
+              Re activate
             </MenuItem>
           )}
 
@@ -154,7 +154,7 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
 
           <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
             <DeleteIcon />
-            Xoá
+            Delete
           </MenuItem>
         </MenuList>
       </Popover>

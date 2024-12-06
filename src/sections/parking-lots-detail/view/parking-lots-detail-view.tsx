@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -16,9 +15,9 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import PeopleIcon from '@mui/icons-material/People';
 import { TableRow } from '@mui/material';
-import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 import { AnalyticsWidgetSummary } from 'src/sections/overview/analytics-widget-summary';
+import ParkingLotAddEmployeeButton from '../parking-lots-add-employee-button';
 import {
   ParkingLotsEmployeeProps,
   ParkingLotsEmployeeTableRow,
@@ -46,7 +45,7 @@ export function ParkingLotsDetailView() {
   return (
     <DashboardContent>
       <Typography variant="h4" flexGrow={1}>
-        Bãi xe Tên bãi xe
+        Parking lot: {`<Parking lot name>`}
       </Typography>
 
       <Box
@@ -66,30 +65,30 @@ export function ParkingLotsDetailView() {
             marginBottom: '8px',
           }}
         >
-          Thông tin chi tiết
+          Detailed information
         </Typography>
         <Typography variant="body1">
-          <strong>Địa chỉ</strong>: Đường Mạc Đĩnh Chi, Khu phố Tân Hòa, Phường Đông Hòa, Thành phố
+          <strong>Address</strong>: Đường Mạc Đĩnh Chi, Khu phố Tân Hòa, Phường Đông Hòa, Thành phố
           Dĩ An, Tỉnh Bình Dương
         </Typography>
 
         <Typography variant="body1">
-          <strong>Ngày hoạt động</strong>: 10/12/2003
+          <strong>Starting date</strong>: 10/12/2003
         </Typography>
 
         <Typography variant="body1">
-          <strong>Số chỗ trống</strong>: 100
+          <strong>Available slots</strong>: 100
         </Typography>
         <Typography variant="body1">
-          <strong>Loại xe</strong>: Xe máy, xe hơi
+          <strong>Vehicle types</strong>: Motorbike, Car
         </Typography>
         <Box display="flex" gap="8px">
           <Typography variant="body1">
-            <strong>Giá tiền</strong>:
+            <strong>Pricing</strong>:
           </Typography>
           <div>
-            <TableRow>Xe hơi: 20.000 VNĐ</TableRow>
-            <TableRow>Xe máy: 5.000 VNĐ</TableRow>
+            <TableRow>Car: 20.000 VNĐ</TableRow>
+            <TableRow>Motorbike: 5.000 VNĐ</TableRow>
           </div>
         </Box>
       </Box>
@@ -102,7 +101,7 @@ export function ParkingLotsDetailView() {
         <Grid container spacing={3}>
           <Grid xs={12} sm={6} md={3}>
             <AnalyticsWidgetSummary
-              title="Người dùng trung bình mỗi tuần"
+              title="Weekly avarage users"
               percent={2.6}
               total={714000}
               icon={<PeopleIcon fontSize="large" />}
@@ -111,7 +110,7 @@ export function ParkingLotsDetailView() {
 
           <Grid xs={12} sm={6} md={3}>
             <AnalyticsWidgetSummary
-              title="Doanh thu tháng trước"
+              title="Last month revenue"
               percent={2.8}
               total={1723315}
               icon={<AttachMoneyIcon fontSize="large" />}
@@ -122,15 +121,9 @@ export function ParkingLotsDetailView() {
 
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
-          Danh sách nhân viên
+          Emlpoyees list
         </Typography>
-        <Button
-          variant="contained"
-          color="inherit"
-          startIcon={<Iconify icon="mingcute:add-line" />}
-        >
-          Thêm tài khoản nhân viên mới
-        </Button>
+        <ParkingLotAddEmployeeButton />
       </Box>
 
       <Card>
@@ -159,9 +152,9 @@ export function ParkingLotsDetailView() {
                   )
                 }
                 headLabel={[
-                  { id: 'name', label: 'Họ và tên' },
-                  { id: 'phone', label: 'Số điện thoại' },
-                  { id: 'dateJoined', label: 'Ngày bắt đầu' },
+                  { id: 'name', label: 'Full name' },
+                  { id: 'phone', label: 'Phone number' },
+                  { id: 'dateJoined', label: 'Starting date' },
                   { id: '' },
                 ]}
               />
@@ -192,10 +185,6 @@ export function ParkingLotsDetailView() {
         </Scrollbar>
 
         <TablePagination
-          labelRowsPerPage="Số hàng mỗi trang:"
-          labelDisplayedRows={({ from, to, count }) =>
-            `${from}–${to} trong ${count !== -1 ? count : `nhiều hơn ${to}`}`
-          }
           component="div"
           page={table.page}
           count={_users.length}

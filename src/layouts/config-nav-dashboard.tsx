@@ -2,27 +2,28 @@ import ApartmentIcon from '@mui/icons-material/Apartment';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import PeopleIcon from '@mui/icons-material/People';
+import PATH_NAME from 'src/configs/path-name';
 // ----------------------------------------------------------------------
 
 export const navData = [
   {
-    title: 'Trang chủ',
-    path: '/',
+    title: 'Homepage',
+    path: PATH_NAME.HomePage,
     icon: <FormatListBulletedIcon />,
   },
   {
-    title: 'Danh sách doanh nghiệp',
-    path: '/parking-owners',
+    title: 'Merchants list',
+    path: PATH_NAME.Merchants,
     icon: <ApartmentIcon />,
   },
   {
-    title: 'Danh sách nhân viên',
-    path: '/parking-employee',
+    title: 'Employees list',
+    path: PATH_NAME.ParkingEmployee,
     icon: <PeopleIcon />,
   },
   {
-    title: 'Danh sách bãi xe',
-    path: '/parking-lots',
+    title: 'Parking lots list',
+    path: PATH_NAME.ParkingLots,
     icon: <DirectionsCarIcon />,
   },
 ];

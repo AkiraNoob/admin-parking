@@ -3,12 +3,12 @@ import { IAuthResponse } from 'src/types/auth.types';
 import { checkNullish } from './check-variable';
 
 export enum EAuthCookiesKey {
-  Token = 'accessToken',
-  Refresh = 'refreshToken',
+  Token = 'parking_accessToken',
+  Refresh = 'parking_refreshToken',
 }
 
 export enum EUserInfoKey {
-  UserId = 'userId',
+  UserId = 'parking_userId',
 }
 
 export function getAccessToken(): string | null {

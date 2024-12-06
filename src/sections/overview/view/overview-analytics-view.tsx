@@ -15,7 +15,7 @@ export function OverviewAnalyticsView() {
   return (
     <DashboardContent maxWidth="xl">
       <Typography variant="h4" sx={{ mb: { xs: 3, md: 5 } }}>
-        Chào mừng quay trở lại 👋
+        Welcome back 👋
       </Typography>
 
       <Box
@@ -26,7 +26,7 @@ export function OverviewAnalyticsView() {
         <Grid container spacing={3}>
           <Grid xs={12} sm={6} md={3}>
             <AnalyticsWidgetSummary
-              title="Người dùng trung bình mỗi tuần"
+              title="Weekly users count"
               percent={2.6}
               total={45}
               icon={<PeopleIcon fontSize="large" />}
@@ -35,7 +35,7 @@ export function OverviewAnalyticsView() {
 
           <Grid xs={12} sm={6} md={3}>
             <AnalyticsWidgetSummary
-              title="Doanh thu tháng trước"
+              title="Last month revenue"
               percent={2.8}
               total={1723315}
               icon={<AttachMoneyIcon fontSize="large" />}
@@ -46,34 +46,34 @@ export function OverviewAnalyticsView() {
 
       <Box display="flex" flexDirection="column" gap="24px">
         <AnalyticsUserPerWeekRates
-          title="Người dùng tuần trước"
+          title="Last week users count"
           chart={{
             categories: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
             series: [
               {
                 data: [12, 10, 16, 20, 21, 13, 15],
-                name: 'Số lượng user',
+                name: 'Number of users',
               },
             ],
           }}
         />
         <AnalyticsWebsiteVisits
-          title="Người dùng tháng trước"
+          title="Last month users count"
           chart={{
-            categories: ['Tuần 1', 'Tuần 2', 'Tuần 3', 'Tuần 4'],
+            categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
             series: [
               {
                 data: [43, 33, 22, 37],
-                name: 'Số lượng user',
+                name: 'Number of users',
               },
             ],
           }}
         />
 
         <AnalyticsWebsiteVisits
-          title="Doanh thu tháng trước"
+          title="Last month revenue"
           chart={{
-            categories: ['Tuần 1', 'Tuần 2', 'Tuần 3', 'Tuần 4'],
+            categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
             series: [
               {
                 data: [43, 33, 22, 37],
@@ -85,9 +85,22 @@ export function OverviewAnalyticsView() {
         />
 
         <AnalyticsWebsiteVisits
-          title="Doanh thu năm trước"
+          title="Last year revenue"
           chart={{
-            categories: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+            categories: [
+              'Jan',
+              'Feb',
+              'Mar',
+              'Apr',
+              'Thu',
+              'Fri',
+              'Jan',
+              'Aug',
+              'Sep',
+              'Oct',
+              'Nov',
+              'Dec',
+            ],
             series: [
               {
                 data: [43, 33, 22, 37, 50, 52, 47, 49, 60, 62, 58, 55],

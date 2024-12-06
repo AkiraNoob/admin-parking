@@ -1,5 +1,5 @@
+import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { UseMutationOptions, useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { postAdminLogin } from 'src/api/auth/login.api';
 import PATH_NAME from 'src/configs/path-name';

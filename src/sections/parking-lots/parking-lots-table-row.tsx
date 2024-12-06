@@ -114,18 +114,18 @@ export function ParkingLotsTableRow({ row, selected, onSelectRow }: ParkingLotsT
         >
           <MenuItem onClick={handleClosePopover}>
             <EditIcon />
-            Chỉnh sửa
+            Edit
           </MenuItem>
 
           {row.status === ParkingStatusEnum.Active ? (
             <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
               <BlockIcon />
-              Dừng hoạt động
+              Suspend
             </MenuItem>
           ) : (
             <MenuItem onClick={handleClosePopover} sx={{ color: 'Highlight' }}>
               <TaskAltIcon />
-              Tái hoạt động
+              Re activate
             </MenuItem>
           )}
 
@@ -133,7 +133,7 @@ export function ParkingLotsTableRow({ row, selected, onSelectRow }: ParkingLotsT
 
           <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
             <DeleteIcon />
-            Xoá
+            Delete
           </MenuItem>
         </MenuList>
       </Popover>

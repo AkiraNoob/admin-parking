@@ -36,7 +36,7 @@ export function ParkingLotsEmployeeTableToolbar({
     >
       {numSelected > 0 ? (
         <Typography component="div" variant="subtitle1">
-          {numSelected} đã chọn
+          {numSelected} selected
         </Typography>
       ) : (
         <OutlinedInput
@@ -55,12 +55,12 @@ export function ParkingLotsEmployeeTableToolbar({
 
       {numSelected > 0 ? (
         <div>
-          <Tooltip title="Xoá">
+          <Tooltip title="Delete">
             <IconButton>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Dừng hoạt động">
+          <Tooltip title="Suspend">
             <IconButton>
               <BlockIcon />
             </IconButton>

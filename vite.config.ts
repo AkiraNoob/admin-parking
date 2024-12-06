@@ -1,11 +1,11 @@
-import path from 'path';
-import checker from 'vite-plugin-checker';
-import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
+import path from 'path';
+import { defineConfig } from 'vite';
+import checker from 'vite-plugin-checker';
 
 // ----------------------------------------------------------------------
 
-const PORT = 3039;
+const PORT = 3000;
 
 export default defineConfig({
   plugins: [

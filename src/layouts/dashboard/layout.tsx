@@ -1,6 +1,6 @@
 import type { Breakpoint, SxProps, Theme } from '@mui/material/styles';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
@@ -8,6 +8,8 @@ import { useTheme } from '@mui/material/styles';
 
 import { Iconify } from 'src/components/iconify';
 
+import { useNavigate } from 'react-router-dom';
+import { getAccessToken } from 'src/utils/auth-helpers';
 import { layoutClasses } from '../classes';
 import { AccountPopover } from '../components/account-popover';
 import { MenuButton } from '../components/menu-button';
@@ -31,10 +33,16 @@ export type DashboardLayoutProps = {
 
 export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) {
   const theme = useTheme();
-
+  const navigate = useNavigate();
   const [navOpen, setNavOpen] = useState(false);
 
   const layoutQuery: Breakpoint = 'lg';
+
+  useEffect(() => {
+    if (!getAccessToken()) {
+      // navigate(PATH_NAME.SignIn);
+    }
+  }, [navigate]);
 
   return (
     <LayoutSection

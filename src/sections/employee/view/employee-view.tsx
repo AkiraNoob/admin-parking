@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -12,7 +11,6 @@ import Typography from '@mui/material/Typography';
 import { _employees, _users } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
-import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
 import { EmployeeTableHead } from '../employee-table-head';
@@ -22,6 +20,7 @@ import { TableEmptyRows } from '../table-empty-rows';
 import { TableNoData } from '../table-no-data';
 import { applyFilter, emptyRows, getComparator } from '../utils';
 
+import EmployeeAddButton from '../employee-add-button';
 import type { EmployeeProps } from '../employee-table-row';
 
 // ----------------------------------------------------------------------
@@ -43,15 +42,9 @@ export function EmployeeView() {
     <DashboardContent>
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
-          Danh sách nhân viên
+          Employees list
         </Typography>
-        <Button
-          variant="contained"
-          color="inherit"
-          startIcon={<Iconify icon="mingcute:add-line" />}
-        >
-          Thêm tài khoản nhân viên mới
-        </Button>
+        <EmployeeAddButton />
       </Box>
 
       <Card>
@@ -80,10 +73,10 @@ export function EmployeeView() {
                   )
                 }
                 headLabel={[
-                  { id: 'name', label: 'Họ và tên' },
-                  { id: 'parkingLotId', label: 'Mã bãi xe làm việc' },
-                  { id: 'phone', label: 'Số điện thoại' },
-                  { id: 'dateJoined', label: 'Ngày bắt đầu' },
+                  { id: 'name', label: 'Full name' },
+                  { id: 'parkingLotId', label: 'Working parking lot id' },
+                  { id: 'phone', label: 'Phone number' },
+                  { id: 'dateJoined', label: 'Joining date' },
                   { id: '' },
                 ]}
               />
@@ -114,10 +107,6 @@ export function EmployeeView() {
         </Scrollbar>
 
         <TablePagination
-          labelRowsPerPage="Số hàng mỗi trang:"
-          labelDisplayedRows={({ from, to, count }) =>
-            `${from}–${to} trong ${count !== -1 ? count : `nhiều hơn ${to}`}`
-          }
           component="div"
           page={table.page}
           count={_users.length}

@@ -27,7 +27,8 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (res) => {
-    return res.data;
+    console.log(res);
+    return res;
   },
   async (error: AxiosError) => {
     const statusCode = error.response?.status as number;

@@ -93,11 +93,11 @@ export function ParkingLotsEmployeeTableRow({
         >
           <MenuItem onClick={handleClosePopover}>
             <EditIcon />
-            Chỉnh sửa
+            Edit
           </MenuItem>
           <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
             <DeleteIcon />
-            Xoá
+            Delete
           </MenuItem>
         </MenuList>
       </Popover>

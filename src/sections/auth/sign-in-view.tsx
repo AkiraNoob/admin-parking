@@ -17,7 +17,7 @@ import { IAuthRequest } from 'src/types/auth.types';
 export function SignInView() {
   const [showPassword, setShowPassword] = useState(false);
 
-  const { mutate, isLoading } = useLogin();
+  const { mutate, isPending } = useLogin();
 
   const { handleSubmit, control } = useForm<IAuthRequest>({
     defaultValues: {
@@ -76,7 +76,7 @@ export function SignInView() {
           />
 
           <LoadingButton
-            loading={isLoading}
+            loading={isPending}
             fullWidth
             size="large"
             type="submit"

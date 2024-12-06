@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -12,7 +11,6 @@ import Typography from '@mui/material/Typography';
 import { _users } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
-import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
 import { TableEmptyRows } from '../table-empty-rows';
@@ -22,6 +20,7 @@ import { UserTableRow } from '../user-table-row';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { applyFilter, emptyRows, getComparator } from '../utils';
 
+import UserAddButton from '../user-add-button';
 import type { UserProps } from '../user-table-row';
 
 // ----------------------------------------------------------------------
@@ -43,15 +42,9 @@ export function UserView() {
     <DashboardContent>
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
-          Chủ bãi xe
+          Merchants list
         </Typography>
-        <Button
-          variant="contained"
-          color="inherit"
-          startIcon={<Iconify icon="mingcute:add-line" />}
-        >
-          Thêm chủ bãi xe mới
-        </Button>
+        <UserAddButton />
       </Box>
 
       <Card>
@@ -80,10 +73,10 @@ export function UserView() {
                   )
                 }
                 headLabel={[
-                  { id: 'company', label: 'Tên doanh nghiệp' },
-                  { id: 'phone', label: 'Số điện thoại' },
-                  { id: 'address', label: 'Địa chỉ' },
-                  { id: 'status', label: 'Tình trạng' },
+                  { id: 'company', label: 'Merchant' },
+                  { id: 'phone', label: 'Phone number' },
+                  { id: 'address', label: 'Address' },
+                  { id: 'status', label: 'Status' },
                   { id: '' },
                 ]}
               />
@@ -114,10 +107,6 @@ export function UserView() {
         </Scrollbar>
 
         <TablePagination
-          labelRowsPerPage="Số hàng mỗi trang:"
-          labelDisplayedRows={({ from, to, count }) =>
-            `${from}–${to} trong ${count !== -1 ? count : `nhiều hơn ${to}`}`
-          }
           component="div"
           page={table.page}
           count={_users.length}

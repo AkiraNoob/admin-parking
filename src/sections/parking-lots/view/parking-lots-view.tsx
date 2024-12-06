@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -12,7 +11,6 @@ import Typography from '@mui/material/Typography';
 import { _parkingLots, _users } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
-import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
 import { ParkingLotsTableHead } from '../parking-lots-table-head';
@@ -22,6 +20,7 @@ import { TableEmptyRows } from '../table-empty-rows';
 import { TableNoData } from '../table-no-data';
 import { applyFilter, emptyRows, getComparator } from '../utils';
 
+import ParkingLotsAddButton from '../parking-lots-add-button';
 import type { ParkingLotsProps } from '../parking-lots-table-row';
 
 // ----------------------------------------------------------------------
@@ -43,15 +42,9 @@ export function ParkingLotsView() {
     <DashboardContent>
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
-          Danh sách bãi xe
+          Parking lots list
         </Typography>
-        <Button
-          variant="contained"
-          color="inherit"
-          startIcon={<Iconify icon="mingcute:add-line" />}
-        >
-          Thêm bãi xe mới
-        </Button>
+        <ParkingLotsAddButton />
       </Box>
 
       <Card>
@@ -80,12 +73,12 @@ export function ParkingLotsView() {
                   )
                 }
                 headLabel={[
-                  { id: 'name', label: 'Tên bãi xe' },
-                  { id: 'address', label: 'Địa chỉ' },
-                  { id: 'dateStart', label: 'Ngày bắt đầu' },
-                  { id: 'status', label: 'Trạng thái' },
-                  { id: '' },
-                  { id: '' },
+                  { id: 'name', label: 'Name' },
+                  { id: 'address', label: 'Address' },
+                  { id: 'dateStart', label: 'Starting date' },
+                  { id: 'status', label: 'Status' },
+                  { id: 'actions' },
+                  { id: 'navigate' },
                 ]}
               />
               <TableBody>
@@ -115,10 +108,6 @@ export function ParkingLotsView() {
         </Scrollbar>
 
         <TablePagination
-          labelRowsPerPage="Số hàng mỗi trang:"
-          labelDisplayedRows={({ from, to, count }) =>
-            `${from}–${to} trong ${count !== -1 ? count : `nhiều hơn ${to}`}`
-          }
           component="div"
           page={table.page}
           count={_users.length}
