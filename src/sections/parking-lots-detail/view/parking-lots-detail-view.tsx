@@ -9,12 +9,12 @@ import TablePagination from '@mui/material/TablePagination';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 
-import { _employees, _users } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import PeopleIcon from '@mui/icons-material/People';
 import { TableRow } from '@mui/material';
+import { useParams } from 'react-router-dom';
 import { Scrollbar } from 'src/components/scrollbar';
 import { AnalyticsWidgetSummary } from 'src/sections/overview/analytics-widget-summary';
 import ParkingLotAddEmployeeButton from '../parking-lots-add-employee-button';
@@ -33,12 +33,21 @@ export function ParkingLotsDetailView() {
   const table = useTable();
 
   const [filterName, setFilterName] = useState('');
+  const { parkingId } = useParams();
 
   const dataFiltered: ParkingLotsEmployeeProps[] = applyFilter({
-    inputData: _employees,
+    inputData: [],
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
+
+  // const { data} =   useQuery({
+  //   queryKey: ['parking_lots_detail', parkingId],
+  //   queryFn: () =>getParkingLo
+
+  //   enabled: !!parkingId,
+  //   initialData: [],
+  // });
 
   const notFound = !dataFiltered.length && !!filterName;
 
@@ -142,13 +151,13 @@ export function ParkingLotsDetailView() {
               <ParkingLotsEmployeeTableHead
                 order={table.order}
                 orderBy={table.orderBy}
-                rowCount={_users.length}
+                rowCount={[].length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
                 onSelectAllRows={(checked) =>
                   table.onSelectAllRows(
                     checked,
-                    _users.map((user) => user.id)
+                    [].map((employee) => '1')
                   )
                 }
                 headLabel={[
@@ -175,7 +184,7 @@ export function ParkingLotsDetailView() {
 
                 <TableEmptyRows
                   height={68}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, _users.length)}
+                  emptyRows={emptyRows(table.page, table.rowsPerPage, [].length)}
                 />
 
                 {notFound && <TableNoData searchQuery={filterName} />}
@@ -187,7 +196,7 @@ export function ParkingLotsDetailView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={_users.length}
+          count={[].length}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}

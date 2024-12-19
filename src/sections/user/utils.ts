@@ -1,6 +1,6 @@
-import type { UserProps } from './user-table-row';
-
 // ----------------------------------------------------------------------
+
+import { IUserRowData } from './user-table-row';
 
 export const visuallyHidden = {
   border: 0,
@@ -53,7 +53,7 @@ export function getComparator<Key extends keyof any>(
 // ----------------------------------------------------------------------
 
 type ApplyFilterProps = {
-  inputData: UserProps[];
+  inputData: IUserRowData[];
   filterName: string;
   comparator: (a: any, b: any) => number;
 };
@@ -71,7 +71,7 @@ export function applyFilter({ inputData, comparator, filterName }: ApplyFilterPr
 
   if (filterName) {
     inputData = inputData.filter(
-      (user) => user.company.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+      (user) => user.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

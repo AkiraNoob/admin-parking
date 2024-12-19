@@ -51,7 +51,7 @@ const UserAddModal = ({ open, toggle, initialData }: IUserAddModal) => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography variant="h4">Add User</Typography>
+          <Typography variant="h4">Thêm người dùng</Typography>
           <IconButton onClick={toggle}>
             <CloseIcon />
           </IconButton>
@@ -60,7 +60,7 @@ const UserAddModal = ({ open, toggle, initialData }: IUserAddModal) => {
           <Controller
             control={control}
             name="name"
-            render={({ field }) => <TextField {...field} fullWidth label="Full name" />}
+            render={({ field }) => <TextField {...field} fullWidth label="Họ và tên" />}
           />
           <Controller
             control={control}
@@ -70,7 +70,7 @@ const UserAddModal = ({ open, toggle, initialData }: IUserAddModal) => {
           <Controller
             control={control}
             name="phoneNumber"
-            render={({ field }) => <TextField {...field} fullWidth label="Phone number" />}
+            render={({ field }) => <TextField {...field} fullWidth label="Số điện thoại" />}
           />
           <Controller
             control={control}
@@ -79,7 +79,7 @@ const UserAddModal = ({ open, toggle, initialData }: IUserAddModal) => {
               <TextField
                 {...field}
                 fullWidth
-                label="Password"
+                label="Mật khẩu"
                 type={showPassword ? 'text' : 'password'}
                 InputProps={{
                   endAdornment: (
@@ -98,7 +98,7 @@ const UserAddModal = ({ open, toggle, initialData }: IUserAddModal) => {
             name="role"
             render={({ field }) => (
               <FormControl fullWidth>
-                <InputLabel id="role-select-label">Role</InputLabel>
+                <InputLabel id="role-select-label">Phân quyền</InputLabel>
                 <Select {...field} labelId="role-select-label" id="role-select" label="Role">
                   {Object.values(EUserRole).map((item) => (
                     <MenuItem key={item} value={item}>
@@ -112,7 +112,7 @@ const UserAddModal = ({ open, toggle, initialData }: IUserAddModal) => {
         </Stack>
         <Box justifyContent="end" display="flex">
           <Button type="submit" variant="contained">
-            Add
+            Thêm
           </Button>
         </Box>
       </Stack>

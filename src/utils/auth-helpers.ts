@@ -9,6 +9,7 @@ export enum EAuthCookiesKey {
 
 export enum EUserInfoKey {
   UserId = 'parking_userId',
+  Role = 'parking_user_role',
 }
 
 export function getAccessToken(): string | null {
@@ -38,6 +39,7 @@ export const setAuthCookies = (props: IAuthResponse) => {
 
 export const setUserLocalStorage = (props: IAuthResponse) => {
   localStorage.setItem(EUserInfoKey.UserId, props.userId);
+  localStorage.setItem(EUserInfoKey.Role, props.role);
 };
 
 export const clearCookiesAndLocalStorage = () => {

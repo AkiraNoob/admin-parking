@@ -31,7 +31,7 @@ export function SignInView() {
   return (
     <>
       <Box gap={1.5} display="flex" flexDirection="column" alignItems="center" sx={{ mb: 5 }}>
-        <Typography variant="h5">Sign in</Typography>
+        <Typography variant="h5">Đăng nhập</Typography>
       </Box>
 
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -44,7 +44,7 @@ export function SignInView() {
               <TextField
                 {...field}
                 fullWidth
-                label="Phone Number"
+                label="Số điện thoại"
                 InputLabelProps={{ shrink: true }}
                 sx={{ mb: 3 }}
               />
@@ -58,7 +58,7 @@ export function SignInView() {
               <TextField
                 {...field}
                 fullWidth
-                label="Password"
+                label="Mật khẩu"
                 InputLabelProps={{ shrink: true }}
                 type={showPassword ? 'text' : 'password'}
                 InputProps={{
@@ -83,7 +83,7 @@ export function SignInView() {
             color="inherit"
             variant="contained"
           >
-            Sign in
+            Đăng nhập
           </LoadingButton>
         </Box>
       </form>

@@ -17,9 +17,24 @@ export interface ICreateUserRequest {
 export enum EUserStatus {
   INACTIVE = 'INACTIVE',
   ACTIVE = 'ACTIVE',
+  SUSPENDED = 'SUSPENDED',
 }
 
 export interface IUserInformation {
+  id: number;
+  name: string;
+  phoneNumber: string;
+  parkingLotId: number | null;
+  merchant: IUserInformation | null;
+  email: string;
+  status: EUserStatus;
+  role: {
+    id: number;
+    name: EUserRole;
+  };
+}
+
+export interface IShortenUserInformation {
   id: number;
   name: string;
   phoneNumber: string;

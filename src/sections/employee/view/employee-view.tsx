@@ -1,5 +1,3 @@
-import { useCallback, useState } from 'react';
-
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
@@ -7,31 +5,43 @@ import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import Typography from '@mui/material/Typography';
-
-import { _employees, _users } from 'src/_mock';
-import { DashboardContent } from 'src/layouts/dashboard';
-
+import { useQuery } from '@tanstack/react-query';
+import { useCallback, useState } from 'react';
+import { getStaffs } from 'src/api/user/get-staffs.api';
 import { Scrollbar } from 'src/components/scrollbar';
-
+import { DashboardContent } from 'src/layouts/dashboard';
+import EmployeeAddButton from '../employee-add-button';
 import { EmployeeTableHead } from '../employee-table-head';
+import type { EmployeeProps } from '../employee-table-row';
 import { EmployeeTableRow } from '../employee-table-row';
 import { EmployeeTableToolbar } from '../employee-table-toolbar';
 import { TableEmptyRows } from '../table-empty-rows';
 import { TableNoData } from '../table-no-data';
 import { applyFilter, emptyRows, getComparator } from '../utils';
 
-import EmployeeAddButton from '../employee-add-button';
-import type { EmployeeProps } from '../employee-table-row';
-
 // ----------------------------------------------------------------------
 
 export function EmployeeView() {
   const table = useTable();
 
+  const { data } = useQuery({
+    queryKey: ['employee_list'],
+    queryFn: getStaffs,
+    initialData: {
+      data: [],
+      pagination: {
+        currentPage: 0,
+        pageSize: 0,
+        totalElements: 0,
+        totalPages: 0,
+      },
+    },
+  });
+
   const [filterName, setFilterName] = useState('');
 
   const dataFiltered: EmployeeProps[] = applyFilter({
-    inputData: _employees,
+    inputData: data.data,
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
@@ -42,7 +52,7 @@ export function EmployeeView() {
     <DashboardContent>
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
-          Employees list
+          Danh sách nhân viên
         </Typography>
         <EmployeeAddButton />
       </Box>
@@ -63,20 +73,20 @@ export function EmployeeView() {
               <EmployeeTableHead
                 order={table.order}
                 orderBy={table.orderBy}
-                rowCount={_users.length}
+                rowCount={data.pagination.totalElements}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
                 onSelectAllRows={(checked) =>
                   table.onSelectAllRows(
                     checked,
-                    _users.map((user) => user.id)
+                    data.data.map((user) => user.id.toString())
                   )
                 }
                 headLabel={[
-                  { id: 'name', label: 'Full name' },
-                  { id: 'parkingLotId', label: 'Working parking lot id' },
-                  { id: 'phone', label: 'Phone number' },
-                  { id: 'dateJoined', label: 'Joining date' },
+                  { id: 'name', label: 'Họ và tên' },
+                  { id: 'phone', label: 'Số điện thoại' },
+                  { id: 'email', label: 'Email' },
+                  { id: 'status', label: 'Trạng thái' },
                   { id: '' },
                 ]}
               />
@@ -90,14 +100,14 @@ export function EmployeeView() {
                     <EmployeeTableRow
                       key={row.id}
                       row={row}
-                      selected={table.selected.includes(row.id)}
-                      onSelectRow={() => table.onSelectRow(row.id)}
+                      selected={table.selected.includes(row.id.toString())}
+                      onSelectRow={() => table.onSelectRow(row.id.toString())}
                     />
                   ))}
 
                 <TableEmptyRows
                   height={68}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, _users.length)}
+                  emptyRows={emptyRows(table.page, table.rowsPerPage, data.data.length)}
                 />
 
                 {notFound && <TableNoData searchQuery={filterName} />}
@@ -109,7 +119,7 @@ export function EmployeeView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={_users.length}
+          count={data.pagination.totalElements}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}

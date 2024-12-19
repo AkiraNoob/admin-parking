@@ -1,9 +1,7 @@
-import { useCallback, useState } from 'react';
-
-import DeleteIcon from '@mui/icons-material/Delete';
+import BlockIcon from '@mui/icons-material/Block';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import Avatar from '@mui/material/Avatar';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
@@ -12,16 +10,12 @@ import MenuList from '@mui/material/MenuList';
 import Popover from '@mui/material/Popover';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
+import { useCallback, useState } from 'react';
+import { Label } from 'src/components/label';
+import { EUserStatus, IShortenUserInformation } from 'src/types/user.type';
 // ----------------------------------------------------------------------
 
-export type EmployeeProps = {
-  id: string;
-  avatarUrl: string;
-  name: string;
-  parkingLotId: string;
-  phone: string;
-  dateJoined: string;
-};
+export type EmployeeProps = {} & IShortenUserInformation;
 
 type EmployeeTableRowProps = {
   row: EmployeeProps;
@@ -49,14 +43,21 @@ export function EmployeeTableRow({ row, selected, onSelectRow }: EmployeeTableRo
 
         <TableCell component="th" scope="row">
           <Box gap={2} display="flex" alignItems="center">
-            <Avatar alt={row.name} src={row.avatarUrl} />
             {row.name}
           </Box>
         </TableCell>
 
-        <TableCell>{row.parkingLotId}</TableCell>
-        <TableCell>{row.phone}</TableCell>
-        <TableCell>{row.dateJoined}</TableCell>
+        <TableCell>{row.phoneNumber}</TableCell>
+        <TableCell>{row.email}</TableCell>
+        <TableCell
+          style={{
+            flexShrink: 0,
+          }}
+        >
+          <Label color={(row.status !== EUserStatus.ACTIVE && 'error') || 'success'}>
+            {row.status}
+          </Label>
+        </TableCell>
 
         <TableCell align="right">
           <IconButton onClick={handleOpenPopover}>
@@ -90,12 +91,20 @@ export function EmployeeTableRow({ row, selected, onSelectRow }: EmployeeTableRo
         >
           <MenuItem onClick={handleClosePopover}>
             <EditIcon />
-            Edit
+            Chỉnh sửa
           </MenuItem>
-          <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
-            <DeleteIcon />
-            Delete
-          </MenuItem>
+
+          {row.status !== EUserStatus.ACTIVE ? (
+            <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
+              <BlockIcon />
+              Suspend
+            </MenuItem>
+          ) : (
+            <MenuItem onClick={handleClosePopover} sx={{ color: 'Highlight' }}>
+              <TaskAltIcon />
+              Activate
+            </MenuItem>
+          )}
         </MenuList>
       </Popover>
     </>

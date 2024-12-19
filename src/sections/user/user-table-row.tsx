@@ -1,12 +1,7 @@
-import { useCallback, useState } from 'react';
-
 import BlockIcon from '@mui/icons-material/Block';
-import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { Divider } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
@@ -15,25 +10,15 @@ import MenuList from '@mui/material/MenuList';
 import Popover from '@mui/material/Popover';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
+import { useCallback, useState } from 'react';
 import { Label } from 'src/components/label';
+import { EUserStatus, IShortenUserInformation } from 'src/types/user.type';
 // ----------------------------------------------------------------------
 
-export enum EUserStatus {
-  Active = 'active',
-  Disable = 'disable',
-}
-
-export type UserProps = {
-  id: string;
-  company: string;
-  address: string;
-  phone: string;
-  status: EUserStatus;
-  avatarUrl: string;
-};
+export interface IUserRowData extends IShortenUserInformation {}
 
 type UserTableRowProps = {
-  row: UserProps;
+  row: IUserRowData;
   selected: boolean;
   onSelectRow: () => void;
 };
@@ -64,8 +49,7 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
           }}
         >
           <Box gap={2} display="flex" alignItems="center">
-            <Avatar alt={row.company} src={row.avatarUrl} />
-            {row.company}
+            {row.name}
           </Box>
         </TableCell>
 
@@ -74,7 +58,7 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
             flexShrink: 0,
           }}
         >
-          {row.phone}
+          {row.phoneNumber}
         </TableCell>
         <TableCell>
           <p
@@ -84,7 +68,7 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
               textOverflow: 'ellipsis',
             }}
           >
-            {row.address}
+            {row.email}
           </p>
         </TableCell>
 
@@ -93,7 +77,7 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
             flexShrink: 0,
           }}
         >
-          <Label color={(row.status === EUserStatus.Disable && 'error') || 'success'}>
+          <Label color={(row.status !== EUserStatus.ACTIVE && 'error') || 'success'}>
             {row.status}
           </Label>
         </TableCell>
@@ -138,24 +122,17 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
             Edit
           </MenuItem>
 
-          {row.status === EUserStatus.Active ? (
+          {row.status !== EUserStatus.ACTIVE ? (
+            <MenuItem onClick={handleClosePopover} sx={{ color: 'Highlight' }}>
+              <TaskAltIcon />
+              Activate
+            </MenuItem>
+          ) : (
             <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
               <BlockIcon />
               Suspend
             </MenuItem>
-          ) : (
-            <MenuItem onClick={handleClosePopover} sx={{ color: 'Highlight' }}>
-              <TaskAltIcon />
-              Re activate
-            </MenuItem>
           )}
-
-          <Divider />
-
-          <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
-            <DeleteIcon />
-            Delete
-          </MenuItem>
         </MenuList>
       </Popover>
     </>

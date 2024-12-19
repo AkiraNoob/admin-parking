@@ -14,8 +14,11 @@ import Typography from '@mui/material/Typography';
 
 import { usePathname, useRouter } from 'src/routes/hooks';
 
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { _myAccount } from 'src/_mock';
+import { getUserById } from 'src/api/user/get-user-detail.api';
+import { EUserInfoKey, clearCookiesAndLocalStorage } from 'src/utils/auth-helpers';
 
 // ----------------------------------------------------------------------
 
@@ -51,6 +54,12 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
     [handleClosePopover, router]
   );
 
+  const { data: myAccount } = useQuery({
+    queryKey: ['user_detail'],
+    queryFn: () => getUserById(localStorage.getItem(EUserInfoKey.UserId) as string),
+    enabled: !!localStorage.getItem(EUserInfoKey.UserId),
+  });
+
   return (
     <>
       <IconButton
@@ -65,8 +74,8 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
         }}
         {...other}
       >
-        <Avatar src={_myAccount.photoURL} alt={_myAccount.displayName} sx={{ width: 1, height: 1 }}>
-          {_myAccount.displayName.charAt(0).toUpperCase()}
+        <Avatar src={_myAccount.photoURL} alt={myAccount?.name} sx={{ width: 1, height: 1 }}>
+          {myAccount?.name.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
@@ -84,11 +93,11 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
       >
         <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {_myAccount?.displayName}
+            {myAccount?.name}
           </Typography>
 
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {_myAccount?.email}
+            {myAccount?.email}
           </Typography>
         </Box>
 
@@ -131,13 +140,16 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
 
         <Box sx={{ p: 1 }}>
           <Button
-            onClick={() => navigate('/sign-in')}
+            onClick={() => {
+              clearCookiesAndLocalStorage();
+              navigate('/sign-in');
+            }}
             fullWidth
             color="error"
             size="medium"
             variant="text"
           >
-            Logout
+            Đăng xuất
           </Button>
         </Box>
       </Popover>

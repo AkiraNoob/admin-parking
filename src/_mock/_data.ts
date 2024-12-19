@@ -1,11 +1,4 @@
-import { EmployeeProps } from 'src/sections/employee/employee-table-row';
 import {
-  ParkingLotsProps,
-  ParkingStatusEnum,
-} from 'src/sections/parking-lots/parking-lots-table-row';
-import { EUserStatus, UserProps } from 'src/sections/user/user-table-row';
-import {
-  _company,
   _description,
   _fullName,
   _id,
@@ -23,41 +16,6 @@ export const _myAccount = {
   email: 'demo@minimals.cc',
   photoURL: '/assets/images/avatar/avatar-25.webp',
 };
-
-// ----------------------------------------------------------------------
-
-export const _users: UserProps[] = [...Array(24)].map<UserProps>((_, index) => ({
-  id: _id(index),
-  company: _company(index),
-  address: 'Đường Mạc Đĩnh Chi, Khu phố Tân Hòa, Phường Đông Hòa, Thành phố Dĩ An, Tỉnh Bình Dương',
-  phone: '0921235612',
-  avatarUrl: `/assets/images/avatar/avatar-${index + 1}.webp`,
-  status: index % 4 ? EUserStatus.Active : EUserStatus.Disable,
-}));
-
-// ----------------------------------------------------------------------
-
-export const _employees: EmployeeProps[] = [...Array(24)].map<EmployeeProps>((_, index) => ({
-  id: _id(index),
-  phone: '0921235612',
-  avatarUrl: `/assets/images/avatar/avatar-${index + 1}.webp`,
-  name: _fullName(index),
-  parkingLotId: _id(index),
-  dateJoined: _times(index),
-}));
-
-// ----------------------------------------------------------------------
-
-export const _parkingLots: ParkingLotsProps[] = [...Array(24)].map<ParkingLotsProps>(
-  (_, index) => ({
-    id: _id(index),
-    name: _fullName(index),
-    address:
-      'Đường Mạc Đĩnh Chi, Khu phố Tân Hòa, Phường Đông Hòa, Thành phố Dĩ An, Tỉnh Bình Dương',
-    dateStart: _times(index),
-    status: index % 4 ? ParkingStatusEnum.Active : ParkingStatusEnum.Inactive,
-  })
-);
 
 // ----------------------------------------------------------------------
 

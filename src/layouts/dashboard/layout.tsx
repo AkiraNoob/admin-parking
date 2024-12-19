@@ -1,6 +1,6 @@
 import type { Breakpoint, SxProps, Theme } from '@mui/material/styles';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
@@ -9,12 +9,15 @@ import { useTheme } from '@mui/material/styles';
 import { Iconify } from 'src/components/iconify';
 
 import { useNavigate } from 'react-router-dom';
-import { getAccessToken } from 'src/utils/auth-helpers';
+import PATH_NAME from 'src/configs/path-name';
+import { EUserRole } from 'src/types/user.type';
+import { EUserInfoKey, getAccessToken } from 'src/utils/auth-helpers';
+import { checkNullish } from 'src/utils/check-variable';
 import { layoutClasses } from '../classes';
 import { AccountPopover } from '../components/account-popover';
 import { MenuButton } from '../components/menu-button';
 import { Searchbar } from '../components/searchbar';
-import { navData } from '../config-nav-dashboard';
+import { navData as _navData } from '../config-nav-dashboard';
 import { _workspaces } from '../config-nav-workspace';
 import { HeaderSection } from '../core/header-section';
 import { LayoutSection } from '../core/layout-section';
@@ -35,12 +38,23 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
   const theme = useTheme();
   const navigate = useNavigate();
   const [navOpen, setNavOpen] = useState(false);
+  const [navData, setNavData] = useState(_navData);
 
   const layoutQuery: Breakpoint = 'lg';
 
+  useLayoutEffect(() => {
+    const role = checkNullish(localStorage.getItem(EUserInfoKey.Role));
+    if (role !== EUserRole.ADMIN) {
+      setNavData((preData) => {
+        const newData = preData.filter((item) => item.path !== PATH_NAME.Merchants);
+        return newData;
+      });
+    }
+  }, []);
+
   useEffect(() => {
     if (!getAccessToken()) {
-      // navigate(PATH_NAME.SignIn);
+      navigate(PATH_NAME.SignIn);
     }
   }, [navigate]);
 
@@ -88,7 +102,7 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
                 <AccountPopover
                   data={[
                     {
-                      label: 'Home',
+                      label: 'Trang chủ',
                       href: '/',
                       icon: <Iconify width={22} icon="solar:home-angle-bold-duotone" />,
                     },

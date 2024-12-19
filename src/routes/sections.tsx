@@ -11,11 +11,13 @@ import { EmployeeView } from 'src/sections/employee/view';
 import { ParkingLotsDetailView } from 'src/sections/parking-lots-detail/view/parking-lots-detail-view';
 import { ParkingLotsView } from 'src/sections/parking-lots/view';
 import { varAlpha } from 'src/theme/styles';
+import { EUserRole } from 'src/types/user.type';
+import { EUserInfoKey } from 'src/utils/auth-helpers';
+import { checkNullish } from 'src/utils/check-variable';
 
 // ----------------------------------------------------------------------
 
 export const HomePage = lazy(() => import('src/pages/home'));
-export const BlogPage = lazy(() => import('src/pages/blog'));
 export const UserPage = lazy(() => import('src/pages/user'));
 export const SignInPage = lazy(() => import('src/pages/sign-in'));
 export const ProductsPage = lazy(() => import('src/pages/products'));
@@ -37,6 +39,8 @@ const renderFallback = (
 );
 
 export function Router() {
+  const role = checkNullish(localStorage.getItem(EUserInfoKey.Role));
+
   return useRoutes([
     {
       element: (
@@ -48,7 +52,12 @@ export function Router() {
       ),
       children: [
         { element: <HomePage />, index: true },
-        { path: PATH_NAME.Merchants.slice(1), element: <UserPage /> },
+        {
+          ...(role === EUserRole.ADMIN && {
+            path: PATH_NAME.Merchants.slice(1),
+            element: <UserPage />,
+          }),
+        },
         { path: PATH_NAME.ParkingEmployee.slice(1), element: <EmployeeView /> },
         {
           path: PATH_NAME.ParkingLots.slice(1),

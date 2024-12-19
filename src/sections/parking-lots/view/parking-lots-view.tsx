@@ -7,21 +7,22 @@ import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import Typography from '@mui/material/Typography';
-
-import { _parkingLots, _users } from 'src/_mock';
-import { DashboardContent } from 'src/layouts/dashboard';
-
+import { useQuery } from '@tanstack/react-query';
+import { getAllParkingLots } from 'src/api/parking-lot/get-all-parking-lots';
+import { getParkingLotsByMerchant } from 'src/api/parking-lot/get-parking-lots-by-merchant';
 import { Scrollbar } from 'src/components/scrollbar';
-
+import { DashboardContent } from 'src/layouts/dashboard';
+import { EUserRole } from 'src/types/user.type';
+import { EUserInfoKey } from 'src/utils/auth-helpers';
+import { checkNullish } from 'src/utils/check-variable';
+import ParkingLotsAddButton from '../parking-lots-add-button';
 import { ParkingLotsTableHead } from '../parking-lots-table-head';
+import type { ParkingLotsProps } from '../parking-lots-table-row';
 import { ParkingLotsTableRow } from '../parking-lots-table-row';
 import { ParkingLotsTableToolbar } from '../parking-lots-table-toolbar';
 import { TableEmptyRows } from '../table-empty-rows';
 import { TableNoData } from '../table-no-data';
 import { applyFilter, emptyRows, getComparator } from '../utils';
-
-import ParkingLotsAddButton from '../parking-lots-add-button';
-import type { ParkingLotsProps } from '../parking-lots-table-row';
 
 // ----------------------------------------------------------------------
 
@@ -30,8 +31,19 @@ export function ParkingLotsView() {
 
   const [filterName, setFilterName] = useState('');
 
+  const userId = checkNullish(localStorage.getItem(EUserInfoKey.UserId));
+  const role = checkNullish(localStorage.getItem(EUserInfoKey.Role));
+
+  const { data } = useQuery({
+    queryKey: ['parking_lots'],
+    queryFn: () =>
+      role === EUserRole.ADMIN ? getAllParkingLots() : getParkingLotsByMerchant(userId),
+    enabled: !!userId,
+    initialData: [],
+  });
+
   const dataFiltered: ParkingLotsProps[] = applyFilter({
-    inputData: _parkingLots,
+    inputData: data,
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
@@ -63,20 +75,21 @@ export function ParkingLotsView() {
               <ParkingLotsTableHead
                 order={table.order}
                 orderBy={table.orderBy}
-                rowCount={_users.length}
+                rowCount={data.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
                 onSelectAllRows={(checked) =>
                   table.onSelectAllRows(
                     checked,
-                    _users.map((user) => user.id)
+                    data.map((parking) => parking.id.toString())
                   )
                 }
                 headLabel={[
-                  { id: 'name', label: 'Name' },
-                  { id: 'address', label: 'Address' },
-                  { id: 'dateStart', label: 'Starting date' },
-                  { id: 'status', label: 'Status' },
+                  { id: 'name', label: 'Tên bãi xe' },
+                  { id: 'address', label: 'Địa chỉ' },
+                  { id: 'workingTime', label: 'Thời gian làm việc' },
+                  { id: 'capacity', label: 'Chỗ trống' },
+                  { id: 'status', label: 'Trạng thái' },
                   { id: 'actions' },
                   { id: 'navigate' },
                 ]}
@@ -91,14 +104,14 @@ export function ParkingLotsView() {
                     <ParkingLotsTableRow
                       key={row.id}
                       row={row}
-                      selected={table.selected.includes(row.id)}
-                      onSelectRow={() => table.onSelectRow(row.id)}
+                      selected={table.selected.includes(row.id.toString())}
+                      onSelectRow={() => table.onSelectRow(row.id.toString())}
                     />
                   ))}
 
                 <TableEmptyRows
                   height={68}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, _users.length)}
+                  emptyRows={emptyRows(table.page, table.rowsPerPage, data.length)}
                 />
 
                 {notFound && <TableNoData searchQuery={filterName} />}
@@ -110,7 +123,7 @@ export function ParkingLotsView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={_users.length}
+          count={data.length}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}

@@ -1,9 +1,10 @@
 import CloseIcon from '@mui/icons-material/Close';
+import { LoadingButton } from '@mui/lab';
 import {
   Box,
-  Button,
   Dialog,
   FormControl,
+  FormHelperText,
   IconButton,
   InputLabel,
   MenuItem,
@@ -12,9 +13,19 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { TimeField } from '@mui/x-date-pickers/TimeField';
+import { useMutation } from '@tanstack/react-query';
+import dayjs from 'dayjs';
+import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useInView } from 'react-intersection-observer';
+import { toast } from 'react-toastify';
+import { getCoordinateByAddress } from 'src/api/openCageGeoCodingRequest';
+import { createParkingLot } from 'src/api/parking-lot/create-parking-lot';
+import useAddress from 'src/hooks/use-address';
 import { ICreateParkingLotRequest } from 'src/types/parking-lots.type';
+import { EUserInfoKey } from 'src/utils/auth-helpers';
+import { checkNullish } from 'src/utils/check-variable';
 
 export interface IParkingLotsAddModal {
   open: boolean;
@@ -22,82 +33,213 @@ export interface IParkingLotsAddModal {
 }
 
 const ParkingLotsAddModal = ({ open, toggle }: IParkingLotsAddModal) => {
-  const { control } =
-    useForm<Omit<ICreateParkingLotRequest, 'longtitude' | 'latitude' | 'ownerId'>>();
-
-  const { data } = useQuery({
-    queryKey: ['province_list'],
-    queryFn: () =>
-      fetch('https://vapi.vnappmob.com/api/province', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          accept:
-            'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-        },
-      }).then((res) => res.json()) as Promise<{
-        results: {
-          province_id: number;
-          province_name: string;
-          province_type: string;
-        }[];
-      }>,
+  const { control, handleSubmit, watch } = useForm<
+    Omit<ICreateParkingLotRequest, 'longtitude' | 'latitude' | 'ownerId'>
+  >({
+    defaultValues: {
+      openHour: dayjs('07:00:00 07/12/2024').toISOString(),
+      closeHour: dayjs('23:00:00 07/12/2024').toISOString(),
+      provinceId: '12',
+      districtId: '107',
+      wardId: '3433',
+    },
   });
+
+  const { ref: provinceRef, inView: inViewProvince } = useInView();
+  const { ref: districtRef, inView: inViewDistrict } = useInView();
+  const { ref: wardRef, inView: inViewWard } = useInView();
+
+  const { provinceQueryReturn, districtQueryReturn, wardQueryReturn } = useAddress({
+    provinceId: watch('provinceId'),
+    districtId: watch('districtId'),
+  });
+
+  useEffect(() => {
+    if (inViewProvince && !provinceQueryReturn.isFetching && provinceQueryReturn.hasNextPage) {
+      provinceQueryReturn.fetchNextPage();
+    }
+  }, [inViewProvince, provinceQueryReturn]);
+
+  useEffect(() => {
+    if (inViewDistrict && !districtQueryReturn.isFetching && districtQueryReturn.hasNextPage) {
+      districtQueryReturn.fetchNextPage();
+    }
+  }, [inViewDistrict, districtQueryReturn]);
+
+  useEffect(() => {
+    if (inViewWard && !wardQueryReturn.isFetching && wardQueryReturn.hasNextPage) {
+      wardQueryReturn.fetchNextPage();
+    }
+  }, [inViewWard, wardQueryReturn]);
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: createParkingLot,
+  });
+
+  const { data: coordinate, mutateAsync: getCoordinate } = useMutation({
+    mutationFn: getCoordinateByAddress,
+  });
+
+  const submit = async (
+    data: Omit<ICreateParkingLotRequest, 'longtitude' | 'latitude' | 'ownerId'>
+  ) => {
+    try {
+      const { lat, lng } = await getCoordinate(data.address);
+
+      const formData = new FormData();
+      formData.append('name', data.name);
+      formData.append('address', data.address);
+      formData.append('longtitude', lng);
+      formData.append('latitude', lat);
+      //
+      formData.append('provinceId', data.provinceId);
+      formData.append('districtId', data.districtId);
+      formData.append('wardId', data.wardId);
+      //
+      formData.append('openHour', dayjs(data.openHour).format('HH:mm:ss'));
+      formData.append('closeHour', dayjs(data.closeHour).format('HH:mm:ss'));
+      formData.append('ownerId', checkNullish(localStorage.getItem(EUserInfoKey.UserId)));
+
+      mutate(formData);
+    } catch (error) {
+      console.log(error);
+      toast(error?.message || 'Có lỗi xảy ra', {
+        type: 'error',
+      });
+    }
+  };
 
   return (
     <Dialog fullWidth maxWidth="md" open={open} onClose={toggle}>
-      <Stack
-        gap={3}
-        sx={{
-          padding: '20px',
-          maxHeight: '760px',
-          overflowY: 'auto',
-        }}
-      >
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography variant="h4">Add Parking Lot</Typography>
-          <IconButton onClick={toggle}>
-            <CloseIcon />
-          </IconButton>
-        </Box>
-        <form>
+      <form onSubmit={handleSubmit(submit)}>
+        <Stack
+          gap={3}
+          sx={{
+            padding: '20px',
+            maxHeight: '760px',
+            overflowY: 'auto',
+          }}
+        >
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Typography variant="h4">Thêm bãi xe</Typography>
+            <IconButton onClick={toggle}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
           <Stack gap={3}>
             <Controller
               control={control}
               name="name"
-              render={({ field }) => <TextField {...field} fullWidth label="Parking name" />}
+              rules={{
+                required: 'Trường này không được để trống',
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  error={!!error}
+                  helperText={error?.message}
+                  fullWidth
+                  label="Tên bãi xe *"
+                />
+              )}
             />
             <Controller
               control={control}
               name="address"
-              render={({ field }) => <TextField {...field} fullWidth label="Address" />}
+              rules={{
+                required: 'Trường này không được để trống',
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  error={!!error}
+                  helperText={error?.message}
+                  fullWidth
+                  label="Địa chỉ *"
+                />
+              )}
             />
+
             <Controller
               control={control}
               name="openHour"
-              render={({ field }) => <TextField {...field} fullWidth label="Opening hour" />}
+              rules={{
+                required: 'Trường này không được để trống',
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <TimeField
+                  {...field}
+                  value={dayjs(field.value)}
+                  onChange={(newValue) => field.onChange(newValue?.toISOString())}
+                  label="Giờ mở cửa *"
+                  format="HH:mm:ss"
+                  slotProps={{
+                    textField: {
+                      helperText: error?.message,
+                      error: !!error,
+                    },
+                  }}
+                />
+              )}
             />
+
             <Controller
               control={control}
               name="closeHour"
-              render={({ field }) => <TextField {...field} fullWidth label="Closing hour" />}
+              rules={{
+                required: 'Trường này không được để trống',
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <TimeField
+                  {...field}
+                  value={dayjs(field.value)}
+                  onChange={(newValue) => field.onChange(newValue?.toISOString())}
+                  label="Giờ đóng cửa *"
+                  format="HH:mm:ss"
+                  slotProps={{
+                    textField: {
+                      helperText: error?.message,
+                      error: !!error,
+                    },
+                  }}
+                />
+              )}
             />
+
             <Controller
               control={control}
               name="provinceId"
-              render={({ field }) => (
-                <FormControl fullWidth>
-                  <InputLabel id="province-select-label">Province</InputLabel>
+              rules={{
+                required: 'Trường này không được để trống',
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <FormControl fullWidth error={!!error}>
+                  <InputLabel filled id="province-select-label">
+                    Tỉnh / Thành phố TW *
+                  </InputLabel>
                   <Select
                     {...field}
                     labelId="province-select-label"
                     id="province-select"
                     label="Province"
+                    defaultValue=""
                   >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {provinceQueryReturn.data?.map((item, index) => (
+                      <MenuItem
+                        key={item.id}
+                        value={item.id}
+                        {...(index === provinceQueryReturn.data.length - 1 &&
+                          !provinceQueryReturn.isFetching &&
+                          provinceQueryReturn.hasNextPage && {
+                            ref: provinceRef,
+                          })}
+                      >
+                        {item.name}
+                      </MenuItem>
+                    ))}
                   </Select>
+
+                  {error?.message ? <FormHelperText>{error?.message}</FormHelperText> : <></>}
                 </FormControl>
               )}
             />
@@ -105,19 +247,35 @@ const ParkingLotsAddModal = ({ open, toggle }: IParkingLotsAddModal) => {
             <Controller
               control={control}
               name="districtId"
-              render={({ field }) => (
-                <FormControl fullWidth>
-                  <InputLabel id="district-select-label">District</InputLabel>
+              rules={{
+                required: 'Trường này không được để trống',
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <FormControl disabled={!watch('provinceId')} fullWidth error={!!error}>
+                  <InputLabel id="district-select-label">Quận / Huyện / Thành phố *</InputLabel>
                   <Select
                     {...field}
                     labelId="district-select-label"
                     id="district-select"
-                    label="District"
+                    label="district"
+                    defaultValue=""
                   >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {districtQueryReturn.data?.map((item, index) => (
+                      <MenuItem
+                        key={item.id}
+                        value={item.id}
+                        {...(index === districtQueryReturn.data.length - 1 &&
+                          !districtQueryReturn.isFetching &&
+                          districtQueryReturn.hasNextPage && {
+                            ref: districtRef,
+                          })}
+                      >
+                        {item.name}
+                      </MenuItem>
+                    ))}
                   </Select>
+
+                  {error?.message ? <FormHelperText>{error?.message}</FormHelperText> : <></>}
                 </FormControl>
               )}
             />
@@ -125,29 +283,56 @@ const ParkingLotsAddModal = ({ open, toggle }: IParkingLotsAddModal) => {
             <Controller
               control={control}
               name="wardId"
-              render={({ field }) => (
-                <FormControl fullWidth>
-                  <InputLabel id="ward-select-label">Ward</InputLabel>
-                  <Select {...field} labelId="ward-select-label" id="ward-select" label="Ward">
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+              rules={{
+                required: 'Trường này không được để trống',
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <FormControl
+                  disabled={!watch('districtId') || !watch('provinceId')}
+                  fullWidth
+                  error={!!error}
+                >
+                  <InputLabel id="ward-select-label">Phường / Xã *</InputLabel>
+                  <Select
+                    {...field}
+                    labelId="ward-select-label"
+                    id="ward-select"
+                    label="ward"
+                    defaultValue=""
+                  >
+                    {wardQueryReturn.data?.map((item, index) => (
+                      <MenuItem
+                        key={item.id}
+                        value={item.id}
+                        {...(index === wardQueryReturn.data.length - 1 &&
+                          !wardQueryReturn.isFetching &&
+                          wardQueryReturn.hasNextPage && {
+                            ref: wardRef,
+                          })}
+                      >
+                        {item.name}
+                      </MenuItem>
+                    ))}
                   </Select>
+
+                  {error?.message ? <FormHelperText>{error?.message}</FormHelperText> : <></>}
                 </FormControl>
               )}
-            />
-
-            <Controller
-              control={control}
-              name="wardId"
-              render={({ field }) => <TextField {...field} type="input" fullWidth label="File" />}
             />
           </Stack>
-        </form>
-        <Box justifyContent="end" display="flex">
-          <Button variant="contained">Add</Button>
-        </Box>
-      </Stack>
+          <Box justifyContent="end" display="flex">
+            <LoadingButton
+              loading={isPending}
+              fullWidth
+              type="submit"
+              color="inherit"
+              variant="contained"
+            >
+              Tạo
+            </LoadingButton>
+          </Box>
+        </Stack>
+      </form>
     </Dialog>
   );
 };

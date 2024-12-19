@@ -1,5 +1,3 @@
-import { useCallback, useState } from 'react';
-
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
@@ -7,21 +5,19 @@ import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import Typography from '@mui/material/Typography';
-
-import { _users } from 'src/_mock';
-import { DashboardContent } from 'src/layouts/dashboard';
-
+import { useQuery } from '@tanstack/react-query';
+import { useCallback, useState } from 'react';
+import { getMerchants } from 'src/api/user/get-merchants.api';
 import { Scrollbar } from 'src/components/scrollbar';
-
+import { DashboardContent } from 'src/layouts/dashboard';
 import { TableEmptyRows } from '../table-empty-rows';
 import { TableNoData } from '../table-no-data';
+import UserAddButton from '../user-add-button';
 import { UserTableHead } from '../user-table-head';
+import type { IUserRowData } from '../user-table-row';
 import { UserTableRow } from '../user-table-row';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { applyFilter, emptyRows, getComparator } from '../utils';
-
-import UserAddButton from '../user-add-button';
-import type { UserProps } from '../user-table-row';
 
 // ----------------------------------------------------------------------
 
@@ -30,7 +26,13 @@ export function UserView() {
 
   const [filterName, setFilterName] = useState('');
 
-  const dataFiltered: UserProps[] = applyFilter({
+  const { data: _users } = useQuery({
+    queryKey: ['merchants'],
+    queryFn: getMerchants,
+    initialData: [],
+  });
+
+  const dataFiltered: IUserRowData[] = applyFilter({
     inputData: _users,
     comparator: getComparator(table.order, table.orderBy),
     filterName,
@@ -69,13 +71,13 @@ export function UserView() {
                 onSelectAllRows={(checked) =>
                   table.onSelectAllRows(
                     checked,
-                    _users.map((user) => user.id)
+                    _users.map((user) => user.id.toString())
                   )
                 }
                 headLabel={[
                   { id: 'company', label: 'Merchant' },
                   { id: 'phone', label: 'Phone number' },
-                  { id: 'address', label: 'Address' },
+                  { id: 'email', label: 'Email' },
                   { id: 'status', label: 'Status' },
                   { id: '' },
                 ]}
@@ -90,8 +92,8 @@ export function UserView() {
                     <UserTableRow
                       key={row.id}
                       row={row}
-                      selected={table.selected.includes(row.id)}
-                      onSelectRow={() => table.onSelectRow(row.id)}
+                      selected={table.selected.includes(row.id.toString())}
+                      onSelectRow={() => table.onSelectRow(row.id.toString())}
                     />
                   ))}
 

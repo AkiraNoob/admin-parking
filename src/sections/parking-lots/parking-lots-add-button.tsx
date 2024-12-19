@@ -15,7 +15,7 @@ const ParkingLotsAddButton = () => {
       >
         New parking lot
       </Button>
-      <ParkingLotsAddModal open={open} toggle={toggle} />
+      {open && <ParkingLotsAddModal open={open} toggle={toggle} />}
     </>
   );
 };

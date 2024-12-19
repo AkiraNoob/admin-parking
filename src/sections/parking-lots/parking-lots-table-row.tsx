@@ -1,36 +1,23 @@
-import { useCallback, useState } from 'react';
-
 import BlockIcon from '@mui/icons-material/Block';
-import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
-import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import Popover from '@mui/material/Popover';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
+import { useCallback, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Label } from 'src/components/label';
+import { EParkingLotStatus, IParkingLotDetail } from 'src/types/parking-lots.type';
 // ----------------------------------------------------------------------
 
-export enum ParkingStatusEnum {
-  Active = 'active',
-  Inactive = 'inactive',
-}
-
-export type ParkingLotsProps = {
-  id: string;
-  address: string;
-  name: string;
-  dateStart: string;
-  status: ParkingStatusEnum;
-};
+export type ParkingLotsProps = {} & IParkingLotDetail;
 
 type ParkingLotsTableRowProps = {
   row: ParkingLotsProps;
@@ -63,13 +50,16 @@ export function ParkingLotsTableRow({ row, selected, onSelectRow }: ParkingLotsT
         </TableCell>
 
         <TableCell>{row.address}</TableCell>
-        <TableCell>{row.dateStart}</TableCell>
+        <TableCell>
+          {row.openHour.slice(0, 5)} - {row.closeHour.slice(0, 5)}
+        </TableCell>
+        <TableCell>{row.capacity}</TableCell>
         <TableCell
           style={{
             flexShrink: 0,
           }}
         >
-          <Label color={(row.status === ParkingStatusEnum.Inactive && 'error') || 'success'}>
+          <Label color={(row.status !== EParkingLotStatus.ACTIVE && 'error') || 'success'}>
             {row.status}
           </Label>
         </TableCell>
@@ -81,8 +71,8 @@ export function ParkingLotsTableRow({ row, selected, onSelectRow }: ParkingLotsT
         </TableCell>
 
         <TableCell align="right">
-          <NavLink to={row.id}>
-            <IconButton onClick={() => {}}>
+          <NavLink to={row.id.toString()}>
+            <IconButton>
               <OpenInNewIcon />
             </IconButton>
           </NavLink>
@@ -117,7 +107,7 @@ export function ParkingLotsTableRow({ row, selected, onSelectRow }: ParkingLotsT
             Edit
           </MenuItem>
 
-          {row.status === ParkingStatusEnum.Active ? (
+          {row.status === EParkingLotStatus.ACTIVE ? (
             <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
               <BlockIcon />
               Suspend
@@ -128,13 +118,6 @@ export function ParkingLotsTableRow({ row, selected, onSelectRow }: ParkingLotsT
               Re activate
             </MenuItem>
           )}
-
-          <Divider />
-
-          <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
-            <DeleteIcon />
-            Delete
-          </MenuItem>
         </MenuList>
       </Popover>
     </>
