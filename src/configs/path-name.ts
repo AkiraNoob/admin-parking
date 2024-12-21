@@ -6,6 +6,7 @@ const PATH_NAME = {
   ParkingLotDetail: '/parking-lots/:parkingId',
   SignIn: '/sign-in',
   Activity: '/activity',
+  Notification: '/notification',
 };
 
 export default PATH_NAME;

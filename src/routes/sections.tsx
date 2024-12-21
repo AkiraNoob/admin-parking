@@ -71,7 +71,7 @@ export function Router() {
         {
           path: PATH_NAME.ParkingLotDetail.slice(1),
           element: <ParkingLotsDetailView />,
-        },
+        }
       ],
     },
     {
