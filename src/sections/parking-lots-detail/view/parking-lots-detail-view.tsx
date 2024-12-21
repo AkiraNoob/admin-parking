@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 
+import FilterListIcon from '@mui/icons-material/FilterList';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
@@ -13,7 +14,7 @@ import { DashboardContent } from 'src/layouts/dashboard';
 
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import PeopleIcon from '@mui/icons-material/People';
-import { TableRow } from '@mui/material';
+import { IconButton, TableRow, Tooltip } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { getParkinglotByID } from 'src/api/parking-lot/get-parking-lot-by-id';
@@ -236,9 +237,18 @@ export function ParkingLotsDetailView() {
         />
       </Card>
 
-      <Typography variant="h4" my={3} flexGrow={1}>
-        Reviews
-      </Typography>
+      <Box display="flex" my={3} alignItems="center">
+        <Typography variant="h4" flexGrow={1}>
+          Reviews
+        </Typography>
+        <Tooltip title="Filter list">
+          <IconButton>
+            <FilterListIcon />
+          </IconButton>
+        </Tooltip>
+
+      </Box>
+
       {
         reviewData.length > 0 && reviewData.map((review) => (
           <ReviewComponent key={review.id} review={review} parkingId={parkingId || ""} />

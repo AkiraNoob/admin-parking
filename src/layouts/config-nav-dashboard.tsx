@@ -1,3 +1,4 @@
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
@@ -25,5 +26,10 @@ export const navData = [
     title: 'Parking lots list',
     path: PATH_NAME.ParkingLots,
     icon: <DirectionsCarIcon />,
+  },
+  {
+    title: 'Your activity',
+    path: PATH_NAME.Activity,
+    icon: <AccessTimeIcon />,
   },
 ];

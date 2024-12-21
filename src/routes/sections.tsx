@@ -19,6 +19,7 @@ import { checkNullish } from 'src/utils/check-variable';
 
 export const HomePage = lazy(() => import('src/pages/home'));
 export const UserPage = lazy(() => import('src/pages/user'));
+export const ActivityPage = lazy(() => import('src/pages/activity'));
 export const SignInPage = lazy(() => import('src/pages/sign-in'));
 export const ProductsPage = lazy(() => import('src/pages/products'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
@@ -52,12 +53,16 @@ export function Router() {
       ),
       children: [
         { element: <HomePage />, index: true },
-        {
-          ...(role === EUserRole.ADMIN && {
+        ...(role === EUserRole.ADMIN ? [
+          {
             path: PATH_NAME.Merchants.slice(1),
             element: <UserPage />,
-          }),
-        },
+          },
+          {
+            path: PATH_NAME.Activity.slice(1),
+            element: <ActivityPage />,
+          },
+        ] : []),
         { path: PATH_NAME.ParkingEmployee.slice(1), element: <EmployeeView /> },
         {
           path: PATH_NAME.ParkingLots.slice(1),

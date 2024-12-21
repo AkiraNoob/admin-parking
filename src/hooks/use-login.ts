@@ -2,6 +2,7 @@ import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { createActivity } from 'src/api/auth/activity/create-activity';
 import { postAdminLogin } from 'src/api/auth/login.api';
 import PATH_NAME from 'src/configs/path-name';
 import { IAuthRequest, IAuthResponse } from 'src/types/auth.types';
@@ -19,6 +20,10 @@ export default function useLogin(
       if (props?.onSuccess) {
         props.onSuccess(data, variables, context);
       }
+      createActivity({
+        userId: data.userId,
+        content:"Bạn đã đăng nhập vào hệ thống",
+      })
     },
     onError(error) {
       if (error.message === 'Not eligible row.') {
