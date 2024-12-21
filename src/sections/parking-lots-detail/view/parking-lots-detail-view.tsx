@@ -127,7 +127,7 @@ export function ParkingLotsDetailView() {
           <div>
             {parkingLotDetail?.vehicles.map((vehicle, index) => (
               <TableRow key={index}>
-                {vehicle.type}: {vehicle.price.toLocaleString()} VNĐ
+                {vehicle.type}: {vehicle.price.toLocaleString()} VNĐ / Hour
               </TableRow>
             )) || <TableRow>N/A</TableRow>}
           </div>

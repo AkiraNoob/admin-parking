@@ -6,6 +6,8 @@ import {
     CardContent,
     Collapse,
     Divider,
+    ImageList,
+    ImageListItem,
     Rating,
     Stack,
     TextField,
@@ -39,6 +41,26 @@ const ReplyItem: React.FC<{ reply: IReply }> = ({ reply }) => (
                 </Box>
             </Stack>
             <Typography variant="body2">{reply.comment}</Typography>
+            {reply.imageUrls && reply.imageUrls.split(",").map((url) => (
+                <Box sx={{ mt: 1 }} key={url}>
+                    <ImageList cols={2} rowHeight={120} gap={8}>
+                        <ImageListItem>
+                            <img
+                                src={url}
+                                alt="Reply"
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'contain',
+                                    cursor: 'pointer',
+                                    borderRadius: 1,
+                                }}
+                            // onClick={() => setSelectedImage(url)}
+                            />
+                        </ImageListItem>
+                    </ImageList>
+                </Box>
+            ))}
         </Stack>
     </Box>
 );
@@ -104,7 +126,26 @@ const ReviewComponent: React.FC<ReviewComponentProps> = ({ review, parkingId }) 
 
                     {/* Review Content */}
                     <Typography variant="body1">{review.comment}</Typography>
-
+                    {review.imagesUrls && review.imagesUrls.split(",").map((url) => (
+                        <Box sx={{ mt: 1 }} key={url}>
+                            <ImageList cols={2} rowHeight={120} gap={8}>
+                                <ImageListItem>
+                                    <img
+                                        src={url}
+                                        alt="Reply"
+                                        style={{
+                                            width: '100%',
+                                            height: '100%',
+                                            objectFit: 'contain',
+                                            cursor: 'pointer',
+                                            borderRadius: 1,
+                                        }}
+                                    // onClick={() => setSelectedImage(url)}
+                                    />
+                                </ImageListItem>
+                            </ImageList>
+                        </Box>
+                    ))}
                     {/* Replies Section */}
                     {replyData.length > 0 && (
                         <>

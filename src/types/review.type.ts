@@ -9,7 +9,7 @@ export interface IReview {
     comment: string;
     created: string;
     updated: string;
-    imageUrls: string | null;
+    imagesUrls: string | null;
   }
   export interface IReply {
     id: string;

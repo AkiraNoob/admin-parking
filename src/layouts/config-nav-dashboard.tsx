@@ -2,7 +2,6 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import NotificationIcon from '@mui/icons-material/Notifications';
 import PeopleIcon from '@mui/icons-material/People';
 import PATH_NAME from 'src/configs/path-name';
 // ----------------------------------------------------------------------
@@ -42,11 +41,6 @@ export const merchantNavData = [
     icon: <FormatListBulletedIcon />,
   },
   {
-    title: 'Merchants list',
-    path: PATH_NAME.Merchants,
-    icon: <ApartmentIcon />,
-  },
-  {
     title: 'Employees list',
     path: PATH_NAME.ParkingEmployee,
     icon: <PeopleIcon />,
@@ -55,10 +49,5 @@ export const merchantNavData = [
     title: 'Parking lots list',
     path: PATH_NAME.ParkingLots,
     icon: <DirectionsCarIcon />,
-  },
-  {
-    title: 'Notification',
-    path: PATH_NAME.Notification,
-    icon: <NotificationIcon />,
   },
 ];
