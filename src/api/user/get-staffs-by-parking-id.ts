@@ -1,8 +1,8 @@
 import { IPaginationResponse } from 'src/types/common.types';
-import { IUserInformation } from 'src/types/user.type';
+import { IShortenUserInformation } from 'src/types/user.type';
 import { httpRequest } from '../httpRequest';
 
-export const getStafsByParkingLotId = (parkingLotId: number) =>
-  httpRequest.get<IPaginationResponse<IUserInformation>>(
+export const getStafsByParkingLotId = (parkingLotId: string) =>
+  httpRequest.get<IPaginationResponse<IShortenUserInformation>>(
     `/users/parking-lots/${parkingLotId}/staff`
   );

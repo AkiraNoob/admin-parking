@@ -17,18 +17,15 @@ import { TableRow } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { getParkinglotByID } from 'src/api/parking-lot/get-parking-lot-by-id';
+import { getStafsByParkingLotId } from 'src/api/user/get-staffs-by-parking-id';
 import { Scrollbar } from 'src/components/scrollbar';
+import { EmployeeTableHead } from 'src/sections/employee/employee-table-head';
+import { EmployeeTableRow } from 'src/sections/employee/employee-table-row';
 import { AnalyticsWidgetSummary } from 'src/sections/overview/analytics-widget-summary';
 import ParkingLotAddEmployeeButton from '../parking-lots-add-employee-button';
-import {
-  ParkingLotsEmployeeProps,
-  ParkingLotsEmployeeTableRow,
-} from '../parking-lots-employee-row';
-import { ParkingLotsEmployeeTableHead } from '../parking-lots-employee-table-head';
 import { ParkingLotsEmployeeTableToolbar } from '../parking-lots-employee-table-toolbar';
 import { TableEmptyRows } from '../table-empty-rows';
-import { TableNoData } from '../table-no-data';
-import { applyFilter, emptyRows, getComparator } from '../utils';
+import { emptyRows } from '../utils';
 // ----------------------------------------------------------------------
 
 export function ParkingLotsDetailView() {
@@ -37,10 +34,21 @@ export function ParkingLotsDetailView() {
   const [filterName, setFilterName] = useState('');
   const { parkingId } = useParams();
 
-  const dataFiltered: ParkingLotsEmployeeProps[] = applyFilter({
-    inputData: [],
-    comparator: getComparator(table.order, table.orderBy),
-    filterName,
+
+  const { data: staffsData } = useQuery({
+    queryKey: ['parking_lot_staff', parkingId],
+    queryFn: () => getStafsByParkingLotId(parkingId as string),
+
+    enabled: !!parkingId,
+    initialData: {
+      data: [],
+      pagination: {
+        currentPage: 0,
+        pageSize: 0,
+        totalElements: 0,
+        totalPages: 0,
+      },
+    },
   });
 
   const { data: parkingLotDetail } = useQuery({
@@ -51,8 +59,18 @@ export function ParkingLotsDetailView() {
     // initialData: ,
   });
 
-  console.log(">>>>data", parkingLotDetail);
-  const notFound = !dataFiltered.length && !!filterName;
+
+  // NOTE: TEMPORARY disable filter
+
+  // const dataFiltered: ParkingLotsEmployeeProps[] = applyFilter({
+  //   inputData: [],
+  //   comparator: getComparator(table.order, table.orderBy),
+  //   filterName,
+  // });
+
+
+  console.log(">>>>data", staffsData);
+  // const notFound = !dataFiltered.length && !!filterName;
 
   return (
     <DashboardContent>
@@ -154,46 +172,47 @@ export function ParkingLotsDetailView() {
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
             <Table sx={{ minWidth: 800 }}>
-              <ParkingLotsEmployeeTableHead
+              <EmployeeTableHead
                 order={table.order}
                 orderBy={table.orderBy}
-                rowCount={[].length}
+                rowCount={staffsData.pagination.totalElements}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
                 onSelectAllRows={(checked) =>
                   table.onSelectAllRows(
                     checked,
-                    [].map((employee) => '1')
+                    staffsData.data.map((user) => user.id.toString())
                   )
                 }
                 headLabel={[
-                  { id: 'name', label: 'Full name' },
-                  { id: 'phone', label: 'Phone number' },
-                  { id: 'dateJoined', label: 'Starting date' },
+                  { id: 'name', label: 'Họ và tên' },
+                  { id: 'phone', label: 'Số điện thoại' },
+                  { id: 'email', label: 'Email' },
+                  { id: 'status', label: 'Trạng thái' },
                   { id: '' },
                 ]}
               />
               <TableBody>
-                {dataFiltered
+                {staffsData.data
                   .slice(
                     table.page * table.rowsPerPage,
                     table.page * table.rowsPerPage + table.rowsPerPage
                   )
                   .map((row) => (
-                    <ParkingLotsEmployeeTableRow
+                    <EmployeeTableRow
                       key={row.id}
                       row={row}
-                      selected={table.selected.includes(row.id)}
-                      onSelectRow={() => table.onSelectRow(row.id)}
+                      selected={table.selected.includes(row.id.toString())}
+                      onSelectRow={() => table.onSelectRow(row.id.toString())}
                     />
                   ))}
 
                 <TableEmptyRows
                   height={68}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, [].length)}
-                />
+                  emptyRows={emptyRows(table.page, table.rowsPerPage, staffsData.data.length)}
 
-                {notFound && <TableNoData searchQuery={filterName} />}
+                />
+                {/* {notFound && <TableNoData searchQuery={filterName} />} */}
               </TableBody>
             </Table>
           </TableContainer>
