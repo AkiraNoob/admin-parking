@@ -14,7 +14,9 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import PeopleIcon from '@mui/icons-material/People';
 import { TableRow } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
+import { getParkinglotByID } from 'src/api/parking-lot/get-parking-lot-by-id';
 import { Scrollbar } from 'src/components/scrollbar';
 import { AnalyticsWidgetSummary } from 'src/sections/overview/analytics-widget-summary';
 import ParkingLotAddEmployeeButton from '../parking-lots-add-employee-button';
@@ -41,20 +43,21 @@ export function ParkingLotsDetailView() {
     filterName,
   });
 
-  // const { data} =   useQuery({
-  //   queryKey: ['parking_lots_detail', parkingId],
-  //   queryFn: () =>getParkingLo
+  const { data: parkingLotDetail } = useQuery({
+    queryKey: ['parking_lots_detail', parkingId],
+    queryFn: () => getParkinglotByID(parkingId as string),
 
-  //   enabled: !!parkingId,
-  //   initialData: [],
-  // });
+    enabled: !!parkingId,
+    // initialData: ,
+  });
 
+  console.log(">>>>data", parkingLotDetail);
   const notFound = !dataFiltered.length && !!filterName;
 
   return (
     <DashboardContent>
       <Typography variant="h4" flexGrow={1}>
-        Parking lot: {`<Parking lot name>`}
+        Parking lot: {parkingLotDetail?.name || 'N/A'}
       </Typography>
 
       <Box
@@ -74,30 +77,33 @@ export function ParkingLotsDetailView() {
             marginBottom: '8px',
           }}
         >
-          Detailed information
+          Detailed Information
         </Typography>
         <Typography variant="body1">
-          <strong>Address</strong>: Đường Mạc Đĩnh Chi, Khu phố Tân Hòa, Phường Đông Hòa, Thành phố
-          Dĩ An, Tỉnh Bình Dương
-        </Typography>
-
-        <Typography variant="body1">
-          <strong>Starting date</strong>: 10/12/2003
+          <strong>Address</strong>: {parkingLotDetail?.address || 'N/A'}
         </Typography>
 
         <Typography variant="body1">
-          <strong>Available slots</strong>: 100
+          <strong>Starting date</strong>: 10/12/2003 {/* Replace with actual date if available */}
+        </Typography>
+
+        <Typography variant="body1">
+          <strong>Available slots</strong>: {parkingLotDetail?.capacity ?? 'N/A'}
         </Typography>
         <Typography variant="body1">
-          <strong>Vehicle types</strong>: Motorbike, Car
+          <strong>Vehicle types</strong>:{' '}
+          {parkingLotDetail?.vehicles.map((v) => v.type).join(', ') || 'N/A'}
         </Typography>
         <Box display="flex" gap="8px">
           <Typography variant="body1">
             <strong>Pricing</strong>:
           </Typography>
           <div>
-            <TableRow>Car: 20.000 VNĐ</TableRow>
-            <TableRow>Motorbike: 5.000 VNĐ</TableRow>
+            {parkingLotDetail?.vehicles.map((vehicle, index) => (
+              <TableRow key={index}>
+                {vehicle.type}: {vehicle.price.toLocaleString()} VNĐ
+              </TableRow>
+            )) || <TableRow>N/A</TableRow>}
           </div>
         </Box>
       </Box>
@@ -130,7 +136,7 @@ export function ParkingLotsDetailView() {
 
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
-          Emlpoyees list
+          Employee list
         </Typography>
         <ParkingLotAddEmployeeButton />
       </Box>

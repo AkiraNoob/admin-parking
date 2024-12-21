@@ -81,3 +81,38 @@ export interface IGetVehicleTypesResponse {
   totalSlots: number;
   activeSlots: number;
 }
+
+export interface IGetParkingLotDetailResponse {
+  id: number;
+  ownerId: number;
+  provinceId: string;
+  provinceName: string;
+  districtId: string;
+  districtName: string;
+  wardId: string;
+  wardName: string;
+  name: string;
+  address: string;
+  capacity: number;
+  latitude: number;
+  longitude: number;
+  openHour: string;
+  closeHour: string;
+  status: EParkingLotStatus;
+  imageUrls: string[] | null;
+  owner: {
+    id: number;
+    name: string;
+    phoneNumber: string;
+    email: string;
+    status: string;
+  };
+  vehicles: {
+    parkingLotId: number;
+    price: number;
+    type: EVehicleType;
+    parkingSlotId: number;
+    totalSlots: number;
+    activeSlots: number;
+  }[];
+}
