@@ -17,7 +17,9 @@ import { TableRow } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { getParkinglotByID } from 'src/api/parking-lot/get-parking-lot-by-id';
+import { getReviews } from 'src/api/review/get-reviews-by-parking-id';
 import { getStafsByParkingLotId } from 'src/api/user/get-staffs-by-parking-id';
+import ReviewComponent from 'src/components/review/review';
 import { Scrollbar } from 'src/components/scrollbar';
 import { EmployeeTableHead } from 'src/sections/employee/employee-table-head';
 import { EmployeeTableRow } from 'src/sections/employee/employee-table-row';
@@ -59,6 +61,12 @@ export function ParkingLotsDetailView() {
     // initialData: ,
   });
 
+  const { data: reviewData } = useQuery({
+    queryKey: ['parking_lot_reviews', parkingId],
+    queryFn: () => getReviews(parkingId as string),
+    enabled: !!parkingId,
+    initialData: [],
+  });
 
   // NOTE: TEMPORARY disable filter
 
@@ -69,7 +77,7 @@ export function ParkingLotsDetailView() {
   // });
 
 
-  console.log(">>>>data", staffsData);
+  console.log(">>>>data", reviewData);
   // const notFound = !dataFiltered.length && !!filterName;
 
   return (
@@ -228,6 +236,16 @@ export function ParkingLotsDetailView() {
           onRowsPerPageChange={table.onChangeRowsPerPage}
         />
       </Card>
+
+      <Typography variant="h4" my={3} flexGrow={1}>
+        Reviews
+      </Typography>
+      {
+        reviewData.length > 0 && reviewData.map((review) => (
+          <ReviewComponent key={review.id} review={review} onReply={() => Promise.resolve()} />
+        ))
+      }
+
     </DashboardContent>
   );
 }

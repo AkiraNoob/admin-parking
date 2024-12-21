@@ -1,4 +1,4 @@
-import { IUserInformation } from './user.type';
+import { IShortenUserInformation, IUserInformation } from './user.type';
 
 export interface ICreateParkingLotRequest {
   name: string;
@@ -115,4 +115,16 @@ export interface IGetParkingLotDetailResponse {
     totalSlots: number;
     activeSlots: number;
   }[];
+}
+
+
+export interface IReview {
+  id: number;
+  user: IShortenUserInformation;
+  parkingLot: IParkingLotDetail;
+  rating: number;
+  comment: string;
+  created: string;
+  updated: string;
+  image: string | null;
 }
