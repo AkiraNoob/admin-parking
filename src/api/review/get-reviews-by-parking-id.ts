@@ -1,4 +1,5 @@
-import { IReview } from 'src/types/parking-lots.type';
+
+import { IReview } from 'src/types/review.type';
 import { httpRequest } from '../httpRequest';
 
 export const getReviews = (parkingLotId: string) =>

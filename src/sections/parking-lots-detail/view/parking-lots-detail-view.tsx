@@ -77,7 +77,6 @@ export function ParkingLotsDetailView() {
   // });
 
 
-  console.log(">>>>data", reviewData);
   // const notFound = !dataFiltered.length && !!filterName;
 
   return (
@@ -229,7 +228,7 @@ export function ParkingLotsDetailView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={[].length}
+          count={staffsData.pagination.totalElements}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}
@@ -242,7 +241,7 @@ export function ParkingLotsDetailView() {
       </Typography>
       {
         reviewData.length > 0 && reviewData.map((review) => (
-          <ReviewComponent key={review.id} review={review} onReply={() => Promise.resolve()} />
+          <ReviewComponent key={review.id} review={review} parkingId={parkingId || ""} />
         ))
       }
 
