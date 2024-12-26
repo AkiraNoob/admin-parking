@@ -78,7 +78,7 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
           }}
         >
           <Label color={(row.status !== EUserStatus.ACTIVE && 'error') || 'success'}>
-            {row.status}
+            {row.status || EUserStatus.INACTIVE}
           </Label>
         </TableCell>
 
@@ -119,18 +119,18 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
         >
           <MenuItem onClick={handleClosePopover}>
             <EditIcon />
-            Edit
+            Chỉnh sửa
           </MenuItem>
 
           {row.status !== EUserStatus.ACTIVE ? (
             <MenuItem onClick={handleClosePopover} sx={{ color: 'Highlight' }}>
               <TaskAltIcon />
-              Activate
+              Kích hoạt
             </MenuItem>
           ) : (
             <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
               <BlockIcon />
-              Suspend
+              Ngưng hoạt động
             </MenuItem>
           )}
         </MenuList>

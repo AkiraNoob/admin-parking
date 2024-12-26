@@ -14,9 +14,10 @@ const UserAddButton = () => {
         color="inherit"
         startIcon={<Iconify icon="mingcute:add-line" />}
       >
-        New merchant
+        Thêm merchant
       </Button>
       <UserAddModal
+        title="Thêm merchant"
         open={open}
         toggle={toggle}
         initialData={{

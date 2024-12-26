@@ -44,7 +44,7 @@ export function UserView() {
     <DashboardContent>
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
-          Merchants list
+          Danh sách merchant
         </Typography>
         <UserAddButton />
       </Box>
@@ -75,10 +75,10 @@ export function UserView() {
                   )
                 }
                 headLabel={[
-                  { id: 'company', label: 'Merchant' },
-                  { id: 'phone', label: 'Phone number' },
+                  { id: 'name', label: 'Họ và tên' },
+                  { id: 'phone', label: 'Số điện thoại' },
                   { id: 'email', label: 'Email' },
-                  { id: 'status', label: 'Status' },
+                  { id: 'status', label: 'Trạng thái' },
                   { id: '' },
                 ]}
               />

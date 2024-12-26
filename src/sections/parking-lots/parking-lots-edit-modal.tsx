@@ -21,27 +21,28 @@ import { Controller, useForm } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
 import { toast } from 'react-toastify';
 import { getCoordinateByAddress } from 'src/api/openCageGeoCodingRequest';
-import { createParkingLot } from 'src/api/parking-lot/create-parking-lot';
+import { updateParkingLot } from 'src/api/parking-lot/update-parking-lot';
 import useAddress from 'src/hooks/use-address';
-import { ICreateParkingLotRequest } from 'src/types/parking-lots.type';
-import { EUserInfoKey } from 'src/utils/auth-helpers';
-import { checkNullish } from 'src/utils/check-variable';
+import { ICreateParkingLotRequest, IParkingLotDetail } from 'src/types/parking-lots.type';
 
-export interface IParkingLotsAddModal {
+export interface IParkingLotsEditModal {
   open: boolean;
   toggle: () => void;
+  initialData: IParkingLotDetail;
 }
 
-const ParkingLotsAddModal = ({ open, toggle }: IParkingLotsAddModal) => {
+const ParkingLotsEditModal = ({ open, toggle, initialData }: IParkingLotsEditModal) => {
   const { control, handleSubmit, watch } = useForm<
     Omit<ICreateParkingLotRequest, 'longtitude' | 'latitude' | 'ownerId'>
   >({
     defaultValues: {
-      openHour: dayjs('07:00:00 07/12/2024').toISOString(),
-      closeHour: dayjs('23:00:00 07/12/2024').toISOString(),
-      provinceId: '12',
-      districtId: '107',
-      wardId: '3433',
+      provinceId: initialData.provinceId,
+      districtId: initialData.districtId,
+      wardId: initialData.wardId,
+      name: initialData.name,
+      address: initialData.address,
+      openHour: dayjs(`${initialData.openHour} 07/12/2024`).toISOString(),
+      closeHour: dayjs(`${initialData.closeHour} 07/12/2024`).toISOString(),
     },
   });
 
@@ -73,7 +74,7 @@ const ParkingLotsAddModal = ({ open, toggle }: IParkingLotsAddModal) => {
   }, [inViewWard, wardQueryReturn]);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: createParkingLot,
+    mutationFn: updateParkingLot,
   });
 
   const { mutateAsync: getCoordinate } = useMutation({
@@ -88,7 +89,8 @@ const ParkingLotsAddModal = ({ open, toggle }: IParkingLotsAddModal) => {
 
       mutate({
         ...data,
-        ownerId: checkNullish(localStorage.getItem(EUserInfoKey.UserId)),
+        id: initialData.id,
+        ownerId: initialData.ownerId.toString(),
         openHour: dayjs(data.openHour).format('HH:mm:ss'),
         closeHour: dayjs(data.closeHour).format('HH:mm:ss'),
         longitude: lng,
@@ -113,7 +115,7 @@ const ParkingLotsAddModal = ({ open, toggle }: IParkingLotsAddModal) => {
           }}
         >
           <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Typography variant="h4">Thêm bãi xe</Typography>
+            <Typography variant="h4">Sửa bãi xe</Typography>
             <IconButton onClick={toggle}>
               <CloseIcon />
             </IconButton>
@@ -320,7 +322,7 @@ const ParkingLotsAddModal = ({ open, toggle }: IParkingLotsAddModal) => {
               color="inherit"
               variant="contained"
             >
-              Tạo
+              Lưu
             </LoadingButton>
           </Box>
         </Stack>
@@ -329,4 +331,4 @@ const ParkingLotsAddModal = ({ open, toggle }: IParkingLotsAddModal) => {
   );
 };
 
-export default ParkingLotsAddModal;
+export default ParkingLotsEditModal;

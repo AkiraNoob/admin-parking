@@ -1,8 +1,5 @@
+import { ICreateParkingLotRequest } from 'src/types/parking-lots.type';
 import { httpRequest } from '../httpRequest';
 
-export const createParkingLot = (data: FormData) =>
-  httpRequest.post(`/api/parking-lots`, data, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+export const createParkingLot = (data: ICreateParkingLotRequest) =>
+  httpRequest.post(`/api/parking-lots`, data);

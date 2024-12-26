@@ -11,10 +11,14 @@ import MenuList from '@mui/material/MenuList';
 import Popover from '@mui/material/Popover';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
+import { useMutation } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { updateParkingLot } from 'src/api/parking-lot/update-parking-lot';
 import { Label } from 'src/components/label';
+import useToggle from 'src/hooks/use-toggle';
 import { EParkingLotStatus, IParkingLotDetail } from 'src/types/parking-lots.type';
+import ParkingLotsEditModal from './parking-lots-edit-modal';
 // ----------------------------------------------------------------------
 
 export type ParkingLotsProps = {} & IParkingLotDetail;
@@ -27,6 +31,7 @@ type ParkingLotsTableRowProps = {
 
 export function ParkingLotsTableRow({ row, selected, onSelectRow }: ParkingLotsTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
+  const [openEditModal, toggleEditModal] = useToggle();
 
   const handleOpenPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setOpenPopover(event.currentTarget);
@@ -35,6 +40,10 @@ export function ParkingLotsTableRow({ row, selected, onSelectRow }: ParkingLotsT
   const handleClosePopover = useCallback(() => {
     setOpenPopover(null);
   }, []);
+
+  const { mutate } = useMutation({
+    mutationFn: updateParkingLot,
+  });
 
   return (
     <>
@@ -60,7 +69,7 @@ export function ParkingLotsTableRow({ row, selected, onSelectRow }: ParkingLotsT
           }}
         >
           <Label color={(row.status !== EParkingLotStatus.ACTIVE && 'error') || 'success'}>
-            {row.status}
+            {row.status || EParkingLotStatus.INACTIVE}
           </Label>
         </TableCell>
 
@@ -102,24 +111,48 @@ export function ParkingLotsTableRow({ row, selected, onSelectRow }: ParkingLotsT
             },
           }}
         >
-          <MenuItem onClick={handleClosePopover}>
+          <MenuItem onClick={toggleEditModal}>
             <EditIcon />
-            Edit
+            Chỉnh sửa
           </MenuItem>
 
           {row.status === EParkingLotStatus.ACTIVE ? (
-            <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
+            <MenuItem
+              onClick={() => {
+                mutate({
+                  ...row,
+                  id: row.id,
+                  status: EParkingLotStatus.SUSPENDED,
+                } as any);
+                handleClosePopover();
+              }}
+              sx={{ color: 'error.main' }}
+            >
               <BlockIcon />
-              Suspend
+              Ngừng hoạt động
             </MenuItem>
           ) : (
-            <MenuItem onClick={handleClosePopover} sx={{ color: 'Highlight' }}>
+            <MenuItem
+              onClick={() => {
+                mutate({
+                  ...row,
+                  id: row.id,
+                  status: EParkingLotStatus.ACTIVE,
+                } as any);
+                handleClosePopover();
+              }}
+              sx={{ color: 'Highlight' }}
+            >
               <TaskAltIcon />
-              Re activate
+              Kích hoạt
             </MenuItem>
           )}
         </MenuList>
       </Popover>
+
+      {openEditModal && (
+        <ParkingLotsEditModal open={openEditModal} toggle={toggleEditModal} initialData={row} />
+      )}
     </>
   );
 }

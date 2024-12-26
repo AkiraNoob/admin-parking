@@ -10,6 +10,7 @@ import { useCallback, useState } from 'react';
 import { getStaffs } from 'src/api/user/get-staffs.api';
 import { Scrollbar } from 'src/components/scrollbar';
 import { DashboardContent } from 'src/layouts/dashboard';
+import { EUserStatus } from 'src/types/user.type';
 import EmployeeAddButton from '../employee-add-button';
 import { EmployeeTableHead } from '../employee-table-head';
 import type { EmployeeProps } from '../employee-table-row';
@@ -24,9 +25,11 @@ import { applyFilter, emptyRows, getComparator } from '../utils';
 export function EmployeeView() {
   const table = useTable();
 
+  const [status, setStatus] = useState<EUserStatus>(EUserStatus.ACTIVE);
+
   const { data } = useQuery({
-    queryKey: ['employee_list'],
-    queryFn: getStaffs,
+    queryKey: ['employee_list', status],
+    queryFn: () => getStaffs(status),
     initialData: {
       data: [],
       pagination: {
@@ -59,6 +62,8 @@ export function EmployeeView() {
 
       <Card>
         <EmployeeTableToolbar
+          status={status}
+          setStatus={setStatus}
           numSelected={table.selected.length}
           filterName={filterName}
           onFilterName={(event: React.ChangeEvent<HTMLInputElement>) => {

@@ -10,8 +10,13 @@ import MenuList from '@mui/material/MenuList';
 import Popover from '@mui/material/Popover';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
+import { toast } from 'react-toastify';
+import { updateUser } from 'src/api/user/update-user.api';
 import { Label } from 'src/components/label';
+import UserUpdateModal from 'src/content/user-update-modal';
+import useToggle from 'src/hooks/use-toggle';
 import { EUserStatus, IShortenUserInformation } from 'src/types/user.type';
 // ----------------------------------------------------------------------
 
@@ -25,7 +30,7 @@ type EmployeeTableRowProps = {
 
 export function EmployeeTableRow({ row, selected, onSelectRow }: EmployeeTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
-
+  const [openEditModal, toggleEditModal] = useToggle();
   const handleOpenPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setOpenPopover(event.currentTarget);
   }, []);
@@ -33,6 +38,30 @@ export function EmployeeTableRow({ row, selected, onSelectRow }: EmployeeTableRo
   const handleClosePopover = useCallback(() => {
     setOpenPopover(null);
   }, []);
+
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationFn: updateUser,
+    onSuccess() {
+      queryClient.refetchQueries({
+        queryKey: ['employee_list'],
+        active: true,
+      });
+      queryClient.refetchQueries({
+        queryKey: ['parking_lot_staff'],
+        active: true,
+      });
+      toast('Cập nhật trạng thái thành công', {
+        type: 'success',
+      });
+    },
+    onError() {
+      toast('Cập nhật trạng thái thất bại', {
+        type: 'error',
+      });
+    },
+  });
 
   return (
     <>
@@ -55,7 +84,7 @@ export function EmployeeTableRow({ row, selected, onSelectRow }: EmployeeTableRo
           }}
         >
           <Label color={(row.status !== EUserStatus.ACTIVE && 'error') || 'success'}>
-            {row.status}
+            {row.status || EUserStatus.INACTIVE}
           </Label>
         </TableCell>
 
@@ -89,24 +118,49 @@ export function EmployeeTableRow({ row, selected, onSelectRow }: EmployeeTableRo
             },
           }}
         >
-          <MenuItem onClick={handleClosePopover}>
+          <MenuItem onClick={toggleEditModal}>
             <EditIcon />
             Chỉnh sửa
           </MenuItem>
 
-          {row.status !== EUserStatus.ACTIVE ? (
-            <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
+          {row.status === EUserStatus.ACTIVE ? (
+            <MenuItem
+              onClick={() =>
+                mutate({
+                  id: row.id,
+                  status: EUserStatus.SUSPENDED,
+                })
+              }
+              sx={{ color: 'error.main' }}
+            >
               <BlockIcon />
-              Ngưng hoạt động
+              Ngừng hoạt động
             </MenuItem>
           ) : (
-            <MenuItem onClick={handleClosePopover} sx={{ color: 'Highlight' }}>
+            <MenuItem
+              onClick={() =>
+                mutate({
+                  id: row.id,
+                  status: EUserStatus.ACTIVE,
+                })
+              }
+              sx={{ color: 'Highlight' }}
+            >
               <TaskAltIcon />
               Kích hoạt
             </MenuItem>
           )}
         </MenuList>
       </Popover>
+
+      {openEditModal && (
+        <UserUpdateModal
+          open={openEditModal}
+          toggle={toggleEditModal}
+          initialData={row}
+          title={'Sửa thông tin nhân viên'}
+        />
+      )}
     </>
   );
 }

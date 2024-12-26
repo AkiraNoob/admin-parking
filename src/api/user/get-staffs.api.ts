@@ -1,6 +1,6 @@
 import { IPaginationResponse } from 'src/types/common.types';
-import { IShortenUserInformation } from 'src/types/user.type';
+import { EUserStatus, IShortenUserInformation } from 'src/types/user.type';
 import { httpRequest } from '../httpRequest';
 
-export const getStaffs = () =>
-  httpRequest.get<IPaginationResponse<IShortenUserInformation>>(`/users/staffs?status=ACTIVE`);
+export const getStaffs = (status: EUserStatus) =>
+  httpRequest.get<IPaginationResponse<IShortenUserInformation>>(`/users/staffs?status=${status}`);

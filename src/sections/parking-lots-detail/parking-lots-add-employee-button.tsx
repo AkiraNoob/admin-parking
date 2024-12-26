@@ -17,6 +17,7 @@ const ParkingLotAddEmployeeButton = () => {
         Thêm nhân viên
       </Button>
       <UserAddModal
+        title="Thêm nhân viên"
         open={open}
         toggle={toggle}
         initialData={{

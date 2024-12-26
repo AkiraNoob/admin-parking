@@ -1,7 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
+import { LoadingButton } from '@mui/lab';
 import {
   Box,
-  Button,
   Dialog,
   FormControl,
   IconButton,
@@ -19,22 +19,43 @@ import { Controller, useForm } from 'react-hook-form';
 import { postSignUp } from 'src/api/auth/sign-up.api';
 import { Iconify } from 'src/components/iconify/iconify';
 import { EUserRole, ICreateUserRequest } from 'src/types/user.type';
+import { EUserInfoKey } from 'src/utils/auth-helpers';
+import { checkNullish } from 'src/utils/check-variable';
 
 export interface IUserAddModal {
   open: boolean;
   toggle: () => void;
   initialData?: Partial<ICreateUserRequest>;
+  title: string;
+  onSuccess?: () => void;
 }
 
-const UserAddModal = ({ open, toggle, initialData }: IUserAddModal) => {
+const UserAddModal = ({
+  open,
+  toggle,
+  initialData,
+  title = 'Thêm nhân viên',
+  onSuccess,
+}: IUserAddModal) => {
   const { control, handleSubmit } = useForm<ICreateUserRequest>({
     defaultValues: initialData,
   });
   const [showPassword, setShowPassword] = useState(false);
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: postSignUp,
+    onSuccess() {
+      if (onSuccess) {
+        onSuccess();
+      }
+      toggle();
+    },
   });
+
+  const availableRoles =
+    checkNullish(localStorage.getItem(EUserInfoKey.Role)) === EUserRole.ADMIN
+      ? [EUserRole.STAFF, EUserRole.MERCHANT]
+      : [EUserRole.STAFF];
 
   const onSubmit = (data: ICreateUserRequest) => mutate(data);
 
@@ -51,7 +72,7 @@ const UserAddModal = ({ open, toggle, initialData }: IUserAddModal) => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography variant="h4">Thêm người dùng</Typography>
+          <Typography variant="h4">{title}</Typography>
           <IconButton onClick={toggle}>
             <CloseIcon />
           </IconButton>
@@ -100,7 +121,7 @@ const UserAddModal = ({ open, toggle, initialData }: IUserAddModal) => {
               <FormControl fullWidth>
                 <InputLabel id="role-select-label">Phân quyền</InputLabel>
                 <Select {...field} labelId="role-select-label" id="role-select" label="Role">
-                  {Object.values(EUserRole).map((item) => (
+                  {availableRoles.map((item) => (
                     <MenuItem key={item} value={item}>
                       {item}
                     </MenuItem>
@@ -111,9 +132,9 @@ const UserAddModal = ({ open, toggle, initialData }: IUserAddModal) => {
           />
         </Stack>
         <Box justifyContent="end" display="flex">
-          <Button type="submit" variant="contained">
+          <LoadingButton loading={isPending} type="submit" variant="contained">
             Thêm
-          </Button>
+          </LoadingButton>
         </Box>
       </Stack>
     </Dialog>

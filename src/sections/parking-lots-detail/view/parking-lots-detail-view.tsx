@@ -39,7 +39,6 @@ export function ParkingLotsDetailView() {
   const { data: staffsData } = useQuery({
     queryKey: ['parking_lot_staff', parkingId],
     queryFn: () => getStafsByParkingLotId(parkingId as string),
-
     enabled: !!parkingId,
     initialData: {
       data: [],

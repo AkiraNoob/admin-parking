@@ -55,7 +55,6 @@ const useAddress = ({ provinceId, districtId }: { provinceId: string; districtId
     select(data) {
       return data.pages.map((item) => item.data).flat();
     },
-    enabled: false,
     queryFn: ({ pageParam }) =>
       fetch(`https://open.oapi.vn/location/provinces?page=${pageParam}&size=10`, {
         method: 'GET',

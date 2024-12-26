@@ -3,7 +3,7 @@ import { IUserInformation } from './user.type';
 export interface ICreateParkingLotRequest {
   name: string;
   address: string;
-  longtitude: string;
+  longitude: string;
   latitude: string;
   openHour: string;
   closeHour: string;
@@ -11,7 +11,7 @@ export interface ICreateParkingLotRequest {
   provinceId: string;
   districtId: string;
   wardId: string;
-  imageFiles: File;
+  // imageFiles: File;
 }
 
 export interface IParkingLotDetail {
