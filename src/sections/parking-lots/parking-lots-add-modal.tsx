@@ -14,7 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import { TimeField } from '@mui/x-date-pickers/TimeField';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -76,8 +76,16 @@ const ParkingLotsAddModal = ({ open, toggle }: IParkingLotsAddModal) => {
     mutationFn: createParkingLot,
   });
 
+  const queryClient = useQueryClient();
   const { mutateAsync: getCoordinate } = useMutation({
     mutationFn: getCoordinateByAddress,
+    onSuccess() {
+      queryClient.refetchQueries({
+        queryKey: ['parking_lots'],
+        active: true,
+      });
+      toggle();
+    },
   });
 
   const submit = async (
