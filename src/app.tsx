@@ -7,6 +7,7 @@ import { Router } from 'src/routes/sections';
 
 import { ThemeProvider } from 'src/theme/theme-provider';
 import PATH_NAME from './configs/path-name';
+import { clearCookiesAndLocalStorage } from './utils/auth-helpers';
 
 // ----------------------------------------------------------------------
 
@@ -16,6 +17,7 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
       retry(failureCount, error) {
         if ((error as AxiosError).response?.status === 401) {
+          clearCookiesAndLocalStorage();
           window.location.href = PATH_NAME.SignIn;
         }
 

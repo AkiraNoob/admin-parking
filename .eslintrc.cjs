@@ -26,6 +26,7 @@ module.exports = {
    */
   rules: {
     // general
+    radix: 0,
     'no-alert': 0,
     camelcase: 0,
     'no-console': 0,
@@ -46,6 +47,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': [1, { args: 'none' }],
     '@typescript-eslint/lines-between-class-members': 0,
     // react
+    'react/jsx-curly-brace-presence': 0,
     'react/no-children-prop': 0,
     'react/react-in-jsx-scope': 0,
     'react/no-array-index-key': 0,

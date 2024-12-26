@@ -14,7 +14,7 @@ const EmployeeAddButton = () => {
         color="inherit"
         startIcon={<Iconify icon="mingcute:add-line" />}
       >
-        New employee
+        Thêm nhân viên
       </Button>
       <UserAddModal
         open={open}

@@ -16,7 +16,7 @@ import { layoutClasses } from '../classes';
 import { AccountPopover } from '../components/account-popover';
 import { MenuButton } from '../components/menu-button';
 import { Searchbar } from '../components/searchbar';
-import { merchantNavData } from '../config-nav-dashboard';
+import { adminnNavData, merchantNavData } from '../config-nav-dashboard';
 import { _workspaces } from '../config-nav-workspace';
 import { HeaderSection } from '../core/header-section';
 import { LayoutSection } from '../core/layout-section';
@@ -43,14 +43,9 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
   const layoutQuery: Breakpoint = 'lg';
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleModal = () => setIsOpen(!isOpen);
   useLayoutEffect(() => {
     const userRole = checkNullish(localStorage.getItem(EUserInfoKey.Role));
-    if (userRole === EUserRole.ADMIN) {
-      setRole(EUserRole.ADMIN);
-    } else {
-      setNavData(merchantNavData);
-    }
+    setNavData(userRole === EUserRole.ADMIN ? adminnNavData : merchantNavData);
     setRole(userRole);
   }, []);
 

@@ -97,12 +97,12 @@ export function EmployeeTableRow({ row, selected, onSelectRow }: EmployeeTableRo
           {row.status !== EUserStatus.ACTIVE ? (
             <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
               <BlockIcon />
-              Suspend
+              Ngưng hoạt động
             </MenuItem>
           ) : (
             <MenuItem onClick={handleClosePopover} sx={{ color: 'Highlight' }}>
               <TaskAltIcon />
-              Activate
+              Kích hoạt
             </MenuItem>
           )}
         </MenuList>

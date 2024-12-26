@@ -54,7 +54,7 @@ export function ParkingLotsView() {
     <DashboardContent>
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
-          Parking lots list
+          Danh sách bãi xe
         </Typography>
         <ParkingLotsAddButton />
       </Box>

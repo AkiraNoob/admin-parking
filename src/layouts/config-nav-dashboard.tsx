@@ -8,27 +8,27 @@ import PATH_NAME from 'src/configs/path-name';
 
 export const adminnNavData = [
   {
-    title: 'Homepage',
+    title: 'Trang chủ',
     path: PATH_NAME.HomePage,
     icon: <FormatListBulletedIcon />,
   },
   {
-    title: 'Merchants list',
+    title: 'Danh sách merchant',
     path: PATH_NAME.Merchants,
     icon: <ApartmentIcon />,
   },
   {
-    title: 'Employees list',
+    title: 'Danh sách nhân viên',
     path: PATH_NAME.ParkingEmployee,
     icon: <PeopleIcon />,
   },
   {
-    title: 'Parking lots list',
+    title: 'Danh sách bãi đỗ xe',
     path: PATH_NAME.ParkingLots,
     icon: <DirectionsCarIcon />,
   },
   {
-    title: 'Your activity',
+    title: 'Hoạt động',
     path: PATH_NAME.Activity,
     icon: <AccessTimeIcon />,
   },
@@ -36,17 +36,17 @@ export const adminnNavData = [
 
 export const merchantNavData = [
   {
-    title: 'Homepage',
+    title: 'Trang chủ',
     path: PATH_NAME.HomePage,
     icon: <FormatListBulletedIcon />,
   },
   {
-    title: 'Employees list',
+    title: 'Danh sách nhân viên',
     path: PATH_NAME.ParkingEmployee,
     icon: <PeopleIcon />,
   },
   {
-    title: 'Parking lots list',
+    title: 'Danh sách bãi đỗ xe',
     path: PATH_NAME.ParkingLots,
     icon: <DirectionsCarIcon />,
   },

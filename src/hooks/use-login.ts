@@ -6,6 +6,8 @@ import { createActivity } from 'src/api/auth/activity/create-activity';
 import { postAdminLogin } from 'src/api/auth/login.api';
 import PATH_NAME from 'src/configs/path-name';
 import { IAuthRequest, IAuthResponse } from 'src/types/auth.types';
+import { EUserRole } from 'src/types/user.type';
+import { clearCookiesAndLocalStorage } from 'src/utils/auth-helpers';
 
 export default function useLogin(
   props?: UseMutationOptions<IAuthResponse, AxiosError, IAuthRequest>
@@ -16,6 +18,14 @@ export default function useLogin(
     mutationFn: postAdminLogin,
     ...props,
     onSuccess(data, variables, context) {
+      if (data.role !== EUserRole.ADMIN && data.role !== EUserRole.MERCHANT) {
+        toast('Tài khoản không có quyền vào trang web này.', {
+          type: 'error',
+        });
+        clearCookiesAndLocalStorage();
+        return;
+      }
+
       navigate(PATH_NAME.HomePage);
       if (props?.onSuccess) {
         props.onSuccess(data, variables, context);
@@ -23,8 +33,8 @@ export default function useLogin(
       // TODO: temporary do this on fe
       createActivity({
         userId: data.userId,
-        content:"Bạn đã đăng nhập vào hệ thống",
-      })
+        content: 'Bạn đã đăng nhập vào hệ thống',
+      });
     },
     onError(error) {
       if (error.message === 'Not eligible row.') {

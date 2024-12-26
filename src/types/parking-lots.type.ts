@@ -41,10 +41,6 @@ export enum EParkingLotStatus {
   SUSPENDED = 'SUSPENDED',
 }
 
-export enum EVehicleType {
-  CAR = 'CAR',
-}
-
 export interface IAddVehicleTypeToParkingLot {
   parkingLotId: number;
   type: EVehicleType;
@@ -117,3 +113,8 @@ export interface IGetParkingLotDetailResponse {
   }[];
 }
 
+export enum EVehicleType {
+  CAR = 'CAR',
+  MOTORCYCLE = 'MOTORCYCLE',
+  BICYCLE = 'BICYCLE',
+}

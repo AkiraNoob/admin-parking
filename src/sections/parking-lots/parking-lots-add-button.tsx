@@ -13,7 +13,7 @@ const ParkingLotsAddButton = () => {
         color="inherit"
         startIcon={<Iconify icon="mingcute:add-line" />}
       >
-        New parking lot
+        Thêm bãi xe
       </Button>
       {open && <ParkingLotsAddModal open={open} toggle={toggle} />}
     </>
