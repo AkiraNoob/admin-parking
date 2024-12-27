@@ -16,14 +16,16 @@ const EmployeeAddButton = () => {
       >
         Thêm nhân viên
       </Button>
-      <UserAddModal
-        title="Thêm nhân viên"
-        open={open}
-        toggle={toggle}
-        initialData={{
-          role: EUserRole.STAFF,
-        }}
-      />
+      {open && (
+        <UserAddModal
+          title="Thêm nhân viên"
+          open={open}
+          toggle={toggle}
+          initialData={{
+            role: EUserRole.STAFF,
+          }}
+        />
+      )}
     </>
   );
 };

@@ -10,6 +10,7 @@ import { useCallback, useState } from 'react';
 import { getMerchants } from 'src/api/user/get-merchants.api';
 import { Scrollbar } from 'src/components/scrollbar';
 import { DashboardContent } from 'src/layouts/dashboard';
+import { EUserStatus } from 'src/types/user.type';
 import { TableEmptyRows } from '../table-empty-rows';
 import { TableNoData } from '../table-no-data';
 import UserAddButton from '../user-add-button';
@@ -25,10 +26,11 @@ export function UserView() {
   const table = useTable();
 
   const [filterName, setFilterName] = useState('');
+  const [status, setStatus] = useState<EUserStatus>(EUserStatus.ACTIVE);
 
   const { data: _users } = useQuery({
-    queryKey: ['merchants'],
-    queryFn: getMerchants,
+    queryKey: ['merchants', status],
+    queryFn: () => getMerchants(status),
     initialData: [],
   });
 
@@ -51,6 +53,8 @@ export function UserView() {
 
       <Card>
         <UserTableToolbar
+          status={status}
+          setStatus={setStatus}
           numSelected={table.selected.length}
           filterName={filterName}
           onFilterName={(event: React.ChangeEvent<HTMLInputElement>) => {

@@ -10,8 +10,13 @@ import MenuList from '@mui/material/MenuList';
 import Popover from '@mui/material/Popover';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
+import { toast } from 'react-toastify';
+import { updateUser } from 'src/api/user/update-user.api';
 import { Label } from 'src/components/label';
+import UserUpdateModal from 'src/content/user-update-modal';
+import useToggle from 'src/hooks/use-toggle';
 import { EUserStatus, IShortenUserInformation } from 'src/types/user.type';
 // ----------------------------------------------------------------------
 
@@ -25,6 +30,7 @@ type UserTableRowProps = {
 
 export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
+  const [openEditModal, toggleEditModal] = useToggle();
 
   const handleOpenPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setOpenPopover(event.currentTarget);
@@ -33,6 +39,27 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
   const handleClosePopover = useCallback(() => {
     setOpenPopover(null);
   }, []);
+
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationFn: updateUser,
+    onSuccess() {
+      queryClient.refetchQueries({
+        queryKey: ['merchant_list'],
+        active: true,
+      });
+
+      toast('Cập nhật trạng thái thành công', {
+        type: 'success',
+      });
+    },
+    onError() {
+      toast('Cập nhật trạng thái thất bại', {
+        type: 'error',
+      });
+    },
+  });
 
   return (
     <>
@@ -123,18 +150,43 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
           </MenuItem>
 
           {row.status !== EUserStatus.ACTIVE ? (
-            <MenuItem onClick={handleClosePopover} sx={{ color: 'Highlight' }}>
+            <MenuItem
+              onClick={() =>
+                mutate({
+                  id: row.id,
+                  status: EUserStatus.ACTIVE,
+                })
+              }
+              sx={{ color: 'Highlight' }}
+            >
               <TaskAltIcon />
               Kích hoạt
             </MenuItem>
           ) : (
-            <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
+            <MenuItem
+              onClick={() =>
+                mutate({
+                  id: row.id,
+                  status: EUserStatus.SUSPENDED,
+                })
+              }
+              sx={{ color: 'error.main' }}
+            >
               <BlockIcon />
               Ngưng hoạt động
             </MenuItem>
           )}
         </MenuList>
       </Popover>
+
+      {openEditModal && (
+        <UserUpdateModal
+          open={openEditModal}
+          toggle={toggleEditModal}
+          initialData={row}
+          title={'Sửa thông tin merchant'}
+        />
+      )}
     </>
   );
 }

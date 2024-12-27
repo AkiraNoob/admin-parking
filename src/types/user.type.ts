@@ -11,7 +11,8 @@ export interface ICreateUserRequest {
   phoneNumber: string;
   password: string;
   role: EUserRole; // ADMIN || MERCHANT || USER || STAFF (not restrict )
-  merchantId?: string; // optional
+  merchantId?: string; // optional;
+  parkingLotId?: string;
 }
 
 export enum EUserStatus {

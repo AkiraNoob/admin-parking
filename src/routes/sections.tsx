@@ -7,9 +7,6 @@ import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgr
 import PATH_NAME from 'src/configs/path-name';
 import { AuthLayout } from 'src/layouts/auth';
 import { DashboardLayout } from 'src/layouts/dashboard';
-import { EmployeeView } from 'src/sections/employee/view';
-import { ParkingLotsDetailView } from 'src/sections/parking-lots-detail/view/parking-lots-detail-view';
-import { ParkingLotsView } from 'src/sections/parking-lots/view';
 import { varAlpha } from 'src/theme/styles';
 import { EUserRole } from 'src/types/user.type';
 import { EUserInfoKey } from 'src/utils/auth-helpers';
@@ -18,6 +15,9 @@ import { checkNullish } from 'src/utils/check-variable';
 // ----------------------------------------------------------------------
 
 export const HomePage = lazy(() => import('src/pages/home'));
+export const ParkingLotsPage = lazy(() => import('src/pages/parking-list'));
+export const EmployeePage = lazy(() => import('src/pages/employee'));
+export const ParkingLotsDetailPage = lazy(() => import('src/pages/parking-lot-detail'));
 export const UserPage = lazy(() => import('src/pages/user'));
 export const ActivityPage = lazy(() => import('src/pages/activity'));
 export const SignInPage = lazy(() => import('src/pages/sign-in'));
@@ -53,25 +53,27 @@ export function Router() {
       ),
       children: [
         { element: <HomePage />, index: true },
-        ...(role === EUserRole.ADMIN ? [
-          {
-            path: PATH_NAME.Merchants.slice(1),
-            element: <UserPage />,
-          },
-          {
-            path: PATH_NAME.Activity.slice(1),
-            element: <ActivityPage />,
-          },
-        ] : []),
-        { path: PATH_NAME.ParkingEmployee.slice(1), element: <EmployeeView /> },
+        ...(role === EUserRole.ADMIN
+          ? [
+              {
+                path: PATH_NAME.Merchants.slice(1),
+                element: <UserPage />,
+              },
+              {
+                path: PATH_NAME.Activity.slice(1),
+                element: <ActivityPage />,
+              },
+            ]
+          : []),
+        { path: PATH_NAME.ParkingEmployee.slice(1), element: <EmployeePage /> },
         {
           path: PATH_NAME.ParkingLots.slice(1),
-          element: <ParkingLotsView />,
+          element: <ParkingLotsPage />,
         },
         {
           path: PATH_NAME.ParkingLotDetail.slice(1),
-          element: <ParkingLotsDetailView />,
-        }
+          element: <ParkingLotsDetailPage />,
+        },
       ],
     },
     {

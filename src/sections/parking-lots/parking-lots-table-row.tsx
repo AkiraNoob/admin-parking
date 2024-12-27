@@ -11,13 +11,17 @@ import MenuList from '@mui/material/MenuList';
 import Popover from '@mui/material/Popover';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { updateParkingLot } from 'src/api/parking-lot/update-parking-lot';
 import { Label } from 'src/components/label';
 import useToggle from 'src/hooks/use-toggle';
 import { EParkingLotStatus, IParkingLotDetail } from 'src/types/parking-lots.type';
+import { EUserRole } from 'src/types/user.type';
+import { EUserInfoKey } from 'src/utils/auth-helpers';
+import { checkNullish } from 'src/utils/check-variable';
 import ParkingLotsEditModal from './parking-lots-edit-modal';
 // ----------------------------------------------------------------------
 
@@ -41,8 +45,24 @@ export function ParkingLotsTableRow({ row, selected, onSelectRow }: ParkingLotsT
     setOpenPopover(null);
   }, []);
 
+  const queryClient = useQueryClient();
+
   const { mutate } = useMutation({
     mutationFn: updateParkingLot,
+    onSuccess() {
+      queryClient.refetchQueries({
+        queryKey: ['parking_lots'],
+        active: true,
+      });
+      toast('Cập nhật trạng thái thành công', {
+        type: 'success',
+      });
+    },
+    onError() {
+      toast('Cập nhật trạng thái thất bại', {
+        type: 'error',
+      });
+    },
   });
 
   return (
@@ -116,7 +136,7 @@ export function ParkingLotsTableRow({ row, selected, onSelectRow }: ParkingLotsT
             Chỉnh sửa
           </MenuItem>
 
-          {row.status === EParkingLotStatus.ACTIVE ? (
+          {row.status === EParkingLotStatus.ACTIVE && (
             <MenuItem
               onClick={() => {
                 mutate({
@@ -131,22 +151,25 @@ export function ParkingLotsTableRow({ row, selected, onSelectRow }: ParkingLotsT
               <BlockIcon />
               Ngừng hoạt động
             </MenuItem>
-          ) : (
-            <MenuItem
-              onClick={() => {
-                mutate({
-                  ...row,
-                  id: row.id,
-                  status: EParkingLotStatus.ACTIVE,
-                } as any);
-                handleClosePopover();
-              }}
-              sx={{ color: 'Highlight' }}
-            >
-              <TaskAltIcon />
-              Kích hoạt
-            </MenuItem>
           )}
+
+          {row.status !== EParkingLotStatus.ACTIVE &&
+            checkNullish(localStorage.getItem(EUserInfoKey.Role)) === EUserRole.ADMIN && (
+              <MenuItem
+                onClick={() => {
+                  mutate({
+                    ...row,
+                    id: row.id,
+                    status: EParkingLotStatus.ACTIVE,
+                  } as any);
+                  handleClosePopover();
+                }}
+                sx={{ color: 'Highlight' }}
+              >
+                <TaskAltIcon />
+                Kích hoạt
+              </MenuItem>
+            )}
         </MenuList>
       </Popover>
 

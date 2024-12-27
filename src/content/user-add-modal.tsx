@@ -14,11 +14,14 @@ import {
   Typography,
 } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { postSignUp } from 'src/api/auth/sign-up.api';
 import { Iconify } from 'src/components/iconify/iconify';
-import { EUserRole, ICreateUserRequest } from 'src/types/user.type';
+import { EUserRole, ICreateUserRequest, IUserInformation } from 'src/types/user.type';
 import { EUserInfoKey } from 'src/utils/auth-helpers';
 import { checkNullish } from 'src/utils/check-variable';
 
@@ -41,14 +44,20 @@ const UserAddModal = ({
     defaultValues: initialData,
   });
   const [showPassword, setShowPassword] = useState(false);
+  const { parkingId } = useParams();
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending } = useMutation<IUserInformation, AxiosError, ICreateUserRequest>({
     mutationFn: postSignUp,
     onSuccess() {
       if (onSuccess) {
         onSuccess();
       }
       toggle();
+    },
+    onError(error) {
+      toast((error.response?.data as string) || 'Có lỗi xảy ra', {
+        type: 'error',
+      });
     },
   });
 
@@ -57,7 +66,17 @@ const UserAddModal = ({
       ? [EUserRole.STAFF, EUserRole.MERCHANT]
       : [EUserRole.STAFF];
 
-  const onSubmit = (data: ICreateUserRequest) => mutate(data);
+  const onSubmit = (data: ICreateUserRequest) => {
+    if (data.role === EUserRole.STAFF) {
+      mutate({
+        ...data,
+        merchantId: checkNullish(localStorage.getItem(EUserInfoKey.UserId)),
+        parkingLotId: parkingId as string,
+      });
+      return;
+    }
+    mutate(data);
+  };
 
   return (
     <Dialog fullWidth maxWidth="md" open={open} onClose={toggle}>

@@ -39,9 +39,6 @@ const ParkingLotsAddModal = ({ open, toggle }: IParkingLotsAddModal) => {
     defaultValues: {
       openHour: dayjs('07:00:00 07/12/2024').toISOString(),
       closeHour: dayjs('23:00:00 07/12/2024').toISOString(),
-      provinceId: '12',
-      districtId: '107',
-      wardId: '3433',
     },
   });
 

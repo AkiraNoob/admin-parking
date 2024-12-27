@@ -11,7 +11,6 @@ import { getStaffs } from 'src/api/user/get-staffs.api';
 import { Scrollbar } from 'src/components/scrollbar';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { EUserStatus } from 'src/types/user.type';
-import EmployeeAddButton from '../employee-add-button';
 import { EmployeeTableHead } from '../employee-table-head';
 import type { EmployeeProps } from '../employee-table-row';
 import { EmployeeTableRow } from '../employee-table-row';
@@ -57,7 +56,7 @@ export function EmployeeView() {
         <Typography variant="h4" flexGrow={1}>
           Danh sách nhân viên
         </Typography>
-        <EmployeeAddButton />
+        {/* <EmployeeAddButton /> */}
       </Box>
 
       <Card>
