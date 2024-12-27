@@ -71,6 +71,13 @@ const ParkingLotsAddModal = ({ open, toggle }: IParkingLotsAddModal) => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: createParkingLot,
+    onSuccess() {
+      toast('Tạo bãi xe thành công', { type: 'success' });
+      toggle();
+    },
+    onError() {
+      toast('Có lỗi xảy ra', { type: 'error' });
+    },
   });
 
   const queryClient = useQueryClient();

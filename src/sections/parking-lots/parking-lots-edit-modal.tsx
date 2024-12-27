@@ -81,7 +81,11 @@ const ParkingLotsEditModal = ({ open, toggle, initialData }: IParkingLotsEditMod
         queryKey: ['parking_lots'],
         active: true,
       });
+      toast('Chỉnh sửa bãi xe thành công', { type: 'success' });
       toggle();
+    },
+    onError() {
+      toast('Có lỗi xảy ra', { type: 'error' });
     },
   });
 
